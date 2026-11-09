@@ -144,3 +144,17 @@ def test_contador_do_carrinho_na_barra_inferior(client):
     adicionar(client, 1, 2)
     adicionar(client, 2, 1)
     assert 'aria-label="3 itens"' in html(client.get("/"))
+
+
+def test_erro_inesperado_mostra_msg99_sem_detalhes_tecnicos(app):  # RNF08 (incluído na Etapa 3)
+    app.config["PROPAGATE_EXCEPTIONS"] = False  # comportamento de produção
+
+    @app.get("/teste-erro")
+    def quebra():
+        raise RuntimeError("detalhe interno secreto")
+
+    resposta = app.test_client().get("/teste-erro")
+    pagina = html(resposta)
+    assert resposta.status_code == 500
+    assert "Algo deu errado do nosso lado. Tente novamente em instantes." in pagina
+    assert "detalhe interno secreto" not in pagina and "Traceback" not in pagina

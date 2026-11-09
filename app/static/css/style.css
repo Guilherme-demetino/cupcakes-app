@@ -202,12 +202,14 @@ h3 { font-size: 16px; margin-bottom: 8px; }
 .lista-admin .item { scroll-margin-top: 80px; }
 .lista-admin .item.inativo img { filter: grayscale(1); opacity: .5; }
 .lista-admin .item.inativo .item-nome { color: var(--suave); }
-.interruptor { width: 52px; height: 30px; border-radius: 999px; border: none; background: #CFC3BE;
+.interruptor { width: 60px; height: 44px; border: none; background: none; /* área de toque 60×44 (RNF03) */
                position: relative; cursor: pointer; flex: none; }
-.interruptor::after { content: ""; position: absolute; top: 3px; left: 3px; width: 24px; height: 24px;
+.interruptor::before { content: ""; position: absolute; top: 7px; left: 4px; width: 52px; height: 30px;
+                       border-radius: 999px; background: #CFC3BE; transition: background .2s; }
+.interruptor::after { content: ""; position: absolute; top: 10px; left: 7px; width: 24px; height: 24px;
                       border-radius: 50%; background: #fff; transition: left .2s; box-shadow: 0 1px 2px rgba(0,0,0,.2); }
-.interruptor.ligado { background: var(--sucesso); }
-.interruptor.ligado::after { left: 25px; }
+.interruptor.ligado::before { background: var(--sucesso); }
+.interruptor.ligado::after { left: 29px; }
 .item-admin { align-items: center; }
 .item-admin .item-info { text-decoration: none; gap: 2px; }
 .botao-acao { min-height: 44px; border: none; cursor: pointer; font: inherit; font-size: 13px; font-weight: 700; }
@@ -217,7 +219,7 @@ h3 { font-size: 16px; margin-bottom: 8px; }
 .campo input[type=file] { padding: 10px; }
 .foto-atual { width: 120px; height: 120px; object-fit: cover; border-radius: 10px; margin-bottom: 6px; }
 .ingredientes-escolha { display: flex; flex-wrap: wrap; gap: 8px; }
-.chip-escolha { display: inline-flex; align-items: center; min-height: 40px; padding: 0 12px; border: 1px solid var(--linha);
+.chip-escolha { display: inline-flex; align-items: center; min-height: 44px; padding: 0 12px; border: 1px solid var(--linha);
                 border-radius: 999px; background: var(--cartao); cursor: pointer; font-size: 14px; }
 .chip-escolha input { position: absolute; opacity: 0; }
 .chip-escolha:has(input:checked) { background: var(--primaria); border-color: var(--primaria); color: #fff; }

@@ -298,6 +298,6 @@ Com o ambiente virtual ativo (o banco de teste `cupcakeapp_test` é criado sozin
 pytest
 ```
 
-O resultado esperado é **203 passed**. Os testes recriam o banco `cupcakeapp_test` a cada execução, então **nunca** use nele o mesmo banco do sistema.
+O resultado esperado é **204 passed**. Os testes recriam o banco `cupcakeapp_test` a cada execução, então **nunca** use nele o mesmo banco do sistema.
 
 Detalhes da arquitetura, das sprints e do que cada teste verifica estão no [README da Etapa 2](README.md).
