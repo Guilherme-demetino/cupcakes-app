@@ -35,6 +35,28 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  // Mostrar / ocultar senha (Sprint 2)
+  document.querySelectorAll("[data-mostrar-senha]").forEach((botao) => {
+    const campo = document.getElementById(botao.dataset.mostrarSenha);
+    botao.addEventListener("click", () => {
+      const mostrar = campo.type === "password";
+      campo.type = mostrar ? "text" : "password";
+      botao.setAttribute("aria-label", mostrar ? "Ocultar senha" : "Mostrar senha");
+      botao.textContent = mostrar ? "🙈" : "👁";
+    });
+  });
+
+  // Máscara de telefone: 11999998888 -> (11) 99999-8888
+  document.querySelectorAll("[data-mascara-telefone]").forEach((campo) => {
+    campo.addEventListener("input", () => {
+      const d = campo.value.replace(/\D/g, "").slice(0, 11);
+      let v = d;
+      if (d.length > 2) v = `(${d.slice(0, 2)}) ${d.slice(2)}`;
+      if (d.length > 6) v = `(${d.slice(0, 2)}) ${d.slice(2, d.length - 4)}-${d.slice(-4)}`;
+      campo.value = v;
+    });
+  });
+
   // Toasts somem sozinhos depois de 4 segundos
   const esconder = (toast) => {
     toast.classList.add("sumindo");

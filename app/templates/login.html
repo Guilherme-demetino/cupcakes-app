@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% from "_campo.html" import campo %}
+{% block titulo %}Entrar{% endblock %}
+{% block cabecalho %}Entrar{% endblock %}
+
+{% block conteudo %}
+<div class="formulario">
+  {% if erro %}<div class="alerta alerta-erro" role="alert">{{ erro }}</div>{% endif %}
+
+  <form method="post" action="{{ url_for('auth.login') }}" novalidate>
+    <input type="hidden" name="next" value="{{ proxima }}">
+    {{ campo('email', 'E-mail', email, 'email', attrs='autocomplete="email" required autofocus') }}
+    <div class="campo">
+      <label for="senha">Senha</label>
+      <div class="senha-com-botao">
+        <input id="senha" name="senha" type="password" autocomplete="current-password" required>
+        <button type="button" class="mostrar-senha" data-mostrar-senha="senha" aria-label="Mostrar senha">👁</button>
+      </div>
+    </div>
+    <button class="botao" type="submit">Entrar</button>
+  </form>
+
+  <p class="separador">Ainda não tem conta?</p>
+  <a class="botao botao-contorno" href="{{ url_for('auth.cadastro', next=proxima or None) }}">Criar conta</a>
+</div>
+{% endblock %}

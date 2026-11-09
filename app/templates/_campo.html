@@ -1,0 +1,11 @@
+{# Macro de campo de formulário com mensagem de erro acessível (padrão da Etapa 1, seção 3.4) #}
+{% macro campo(nome, rotulo, valor='', tipo='text', erro=None, dica=None, attrs='') %}
+  <div class="campo">
+    <label for="{{ nome }}">{{ rotulo }}</label>
+    <input id="{{ nome }}" name="{{ nome }}" type="{{ tipo }}" value="{{ valor }}" {{ attrs | safe }}
+           {% if erro %}aria-invalid="true" aria-describedby="erro-{{ nome }}" class="invalido"
+           {% elif dica %}aria-describedby="dica-{{ nome }}"{% endif %}>
+    {% if erro %}<p class="erro-campo" id="erro-{{ nome }}">{{ erro }}</p>
+    {% elif dica %}<p class="dica" id="dica-{{ nome }}">{{ dica }}</p>{% endif %}
+  </div>
+{% endmacro %}

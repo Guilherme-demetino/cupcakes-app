@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block titulo %}Minha conta{% endblock %}
+{% block cabecalho %}Minha conta{% endblock %}
+
+{% block conteudo %}
+<div class="formulario">
+  <div class="cartao-dados">
+    <p class="ola">Olá, <strong>{{ usuario.nome }}</strong>!</p>
+    <dl>
+      <div><dt>E-mail</dt><dd>{{ usuario.email }}</dd></div>
+      <div><dt>Telefone</dt><dd>{{ usuario.telefone or '—' }}</dd></div>
+      <div><dt>Cliente desde</dt><dd>{{ usuario.criado_em.strftime('%d/%m/%Y') }}</dd></div>
+    </dl>
+  </div>
+
+  <a class="botao botao-contorno" href="{{ url_for('carrinho.ver') }}">Ver meu carrinho</a>
+  <button class="botao botao-contorno" type="button" disabled title="Disponível na Sprint 3 (US08)">Meus pedidos (em breve)</button>
+
+  <form method="post" action="{{ url_for('auth.logout') }}">
+    <button class="botao botao-sair" type="submit">Sair da conta</button>
+  </form>
+</div>
+{% endblock %}

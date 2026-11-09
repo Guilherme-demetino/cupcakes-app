@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% from "_campo.html" import campo %}
+{% block titulo %}Criar conta{% endblock %}
+{% block voltar %}<a class="voltar" href="{{ url_for('auth.login', next=proxima or None) }}" aria-label="Voltar para o login">←</a>{% endblock %}
+{% block cabecalho %}Criar conta{% endblock %}
+
+{% block conteudo %}
+<div class="formulario">
+  {% if erros.email and 'já tem cadastro' in erros.email %}
+    <div class="alerta alerta-erro" role="alert">
+      {{ erros.email }} <a href="{{ url_for('auth.login', next=proxima or None) }}">Entrar</a>
+    </div>
+  {% endif %}
+
+  <form method="post" action="{{ url_for('auth.cadastro') }}" novalidate>
+    <input type="hidden" name="next" value="{{ proxima }}">
+    {{ campo('nome', 'Nome completo', dados.nome, erro=erros.nome, attrs='autocomplete="name" required maxlength="100" autofocus') }}
+    {{ campo('email', 'E-mail', dados.email, 'email', erro=erros.email, attrs='autocomplete="email" required maxlength="150"') }}
+    {{ campo('telefone', 'Telefone (com DDD)', dados.telefone, 'tel', erro=erros.telefone,
+             dica='Usaremos só para avisar sobre a entrega.',
+             attrs='autocomplete="tel" inputmode="tel" placeholder="(11) 99999-9999" required data-mascara-telefone') }}
+    <div class="campo">
+      <label for="senha">Senha</label>
+      <div class="senha-com-botao">
+        <input id="senha" name="senha" type="password" autocomplete="new-password" required minlength="8" maxlength="72"
+               {% if erros.senha %}aria-invalid="true" class="invalido"{% endif %} aria-describedby="{{ 'erro-senha' if erros.senha else 'dica-senha' }}">
+        <button type="button" class="mostrar-senha" data-mostrar-senha="senha" aria-label="Mostrar senha">👁</button>
+      </div>
+      {% if erros.senha %}<p class="erro-campo" id="erro-senha">{{ erros.senha }}</p>
+      {% else %}<p class="dica" id="dica-senha">Mínimo de 8 caracteres.</p>{% endif %}
+    </div>
+    <button class="botao" type="submit">Criar conta</button>
+  </form>
+</div>
+{% endblock %}

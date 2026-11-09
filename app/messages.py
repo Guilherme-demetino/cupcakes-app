@@ -28,6 +28,7 @@ MENSAGENS = {
     "MSG20": "{qtd}× {nome} adicionado ao carrinho.",
     "MSG21": "Pedido nº {id} recebido! Você pode acompanhar em Meus pedidos.",
     "MSG22": "Cupcake salvo com sucesso.",
+    "MSG23": "Digite um telefone com DDD, como (11) 99999-9999.",
     "MSG99": "Algo deu errado do nosso lado. Tente novamente em instantes.",
 }
 

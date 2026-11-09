@@ -13,6 +13,7 @@ from dotenv import load_dotenv
 from flask import Flask, render_template, session
 
 from . import db
+from .auth import usuario_logado
 from .messages import msg
 
 
@@ -34,8 +35,10 @@ def create_app(config=None):
     # ---- Controllers (rotas) ----
     from .controllers.catalogo_controller import bp as catalogo_bp
     from .controllers.carrinho_controller import bp as carrinho_bp
+    from .controllers.auth_controller import bp as auth_bp
     app.register_blueprint(catalogo_bp)
     app.register_blueprint(carrinho_bp)
+    app.register_blueprint(auth_bp)
 
     # ---- Filtros e variáveis disponíveis em todos os templates ----
     @app.template_filter("brl")
@@ -49,7 +52,7 @@ def create_app(config=None):
     @app.context_processor
     def dados_globais():
         carrinho = session.get("carrinho", {})
-        return {"qtd_carrinho": sum(carrinho.values())}
+        return {"qtd_carrinho": sum(carrinho.values()), "usuario": usuario_logado()}
 
     @app.get("/favicon.ico")
     def favicon():

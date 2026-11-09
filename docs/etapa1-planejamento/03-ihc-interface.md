@@ -110,6 +110,7 @@ Todas as mensagens seguem o mesmo padrão: dizem **o que aconteceu** e **o que f
 | MSG20 | Sucesso | Detalhes | "{qtd}× {nome} adicionado ao carrinho." (com o link "Ver carrinho") |
 | MSG21 | Sucesso | Confirmação | "Pedido nº {id} recebido! Você pode acompanhar em Meus pedidos." |
 | MSG22 | Sucesso | Admin | "Cupcake salvo com sucesso." |
+| MSG23 | Erro | Cadastro – telefone | "Digite um telefone com DDD, como (11) 99999-9999." *(incluída na Sprint 2)* |
 | MSG99 | Erro | Falha inesperada | "Algo deu errado do nosso lado. Tente novamente em instantes." |
 
 **Como cada tipo aparece:** erros de campo ficam em texto vermelho logo abaixo do campo, que ganha borda vermelha. Sucessos e avisos aparecem num *toast* (aviso flutuante) no rodapé por 4 s. Confirmações de ações destrutivas aparecem numa janela modal.
