@@ -10,7 +10,7 @@ Projeto Integrador Transdisciplinar em Engenharia de Software II
 | Etapa | Conteúdo | Status |
 |---|---|---|
 | [Etapa 1 – Planejamento](docs/etapa1-planejamento/) | Escopo, histórias de usuário, UML, IHC, protótipo, banco de dados e dicionário | ✅ Concluída |
-| [Etapa 2 – Desenvolvimento](docs/etapa2-desenvolvimento/) | Front-end, back-end MVC, testes e manual de uso | 🚧 As 11 histórias estão prontas (Sprints 1 a 4) e há 203 testes. Falta o manual de uso |
+| [Etapa 2 – Desenvolvimento](docs/etapa2-desenvolvimento/) | Front-end, back-end MVC, 203 testes e [manual de uso](docs/etapa2-desenvolvimento/manual-de-uso.md) | ✅ Concluída |
 | Etapa 3 – Validação | Testes de verificação e validação, avaliação de 5 usuários, correções e vídeo | ⏳ A fazer |
 
 ## Tecnologias
@@ -32,7 +32,7 @@ flask --app run run --debug       # http://127.0.0.1:5000
 pytest                            # roda os testes
 ```
 
-O passo a passo completo está em [docs/etapa2-desenvolvimento](docs/etapa2-desenvolvimento/README.md#como-rodar-no-seu-computador).
+O passo a passo completo, com as soluções para problemas comuns, está no **[Manual de Uso](docs/etapa2-desenvolvimento/manual-de-uso.md)**.
 
 ## Estrutura do repositório
 

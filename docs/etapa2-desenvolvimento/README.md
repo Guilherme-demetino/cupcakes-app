@@ -240,4 +240,6 @@ Depois de desfazer as mudanças, os 203 testes voltaram a passar.
 | `tests/test_rotas_pedido.py` | Integração (simula o navegador) | 18 | 3 |
 | `tests/test_admin.py` | Unitário + integração | 55 | 4 |
 
-### Manual de uso ⏳
+### Manual de uso ✅
+
+O **[Manual de Uso](manual-de-uso.md)** traz a instalação passo a passo, o guia do cliente e o guia do administrador, com capturas de tela de cada função, a tabela de mensagens do sistema e as soluções para problemas comuns.
