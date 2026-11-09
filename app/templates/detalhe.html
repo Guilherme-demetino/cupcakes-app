@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block titulo %}{{ cupcake.nome }}{% endblock %}
+{% block voltar %}<a class="voltar" href="{{ url_for('catalogo.index') }}" aria-label="Voltar ao cardápio">←</a>{% endblock %}
+{% block cabecalho %}{{ cupcake.nome }}{% endblock %}
+
+{% block conteudo %}
+<article class="detalhe">
+  <img class="detalhe-foto" src="{{ cupcake.foto_url }}" alt="Foto do cupcake {{ cupcake.nome }}" width="600" height="600">
+
+  <div class="detalhe-cabecalho">
+    <h2>{{ cupcake.nome }}</h2>
+    <span class="preco preco-grande">{{ cupcake.preco | brl }}</span>
+  </div>
+  <p class="legenda">{{ cupcake.tamanho_rotulo }} • {{ cupcake.peso_gramas }} g • {{ cupcake.categoria }}</p>
+
+  <p class="descricao">{{ cupcake.descricao }}</p>
+
+  <h3>Ingredientes</h3>
+  <ul class="ingredientes">
+    {% for i in cupcake.ingredientes %}
+      <li class="{{ 'alergenico' if i.alergenico }}">{% if i.alergenico %}<span aria-hidden="true">⚠ </span>{% endif %}{{ i.nome }}{% if i.alergenico %}<span class="sr-only"> (alergênico)</span>{% endif %}</li>
+    {% endfor %}
+  </ul>
+
+  {% if cupcake.alergenicos %}
+    <div class="alerta" role="note">
+      <strong>⚠ Contém alergênicos:</strong> {{ cupcake.alergenicos | join(', ') }}.
+    </div>
+  {% endif %}
+
+  <form class="comprar" action="{{ url_for('carrinho.adicionar') }}" method="post" data-preco="{{ cupcake.preco }}">
+    <input type="hidden" name="cupcake_id" value="{{ cupcake.id }}">
+    <div class="linha-quantidade">
+      <label for="quantidade">Quantidade</label>
+      <div class="quantidade" data-stepper>
+        <button type="button" data-delta="-1" aria-label="Diminuir quantidade">−</button>
+        <input id="quantidade" name="quantidade" type="number" inputmode="numeric" min="1" max="20" value="1" required>
+        <button type="button" data-delta="1" aria-label="Aumentar quantidade">+</button>
+      </div>
+    </div>
+    <button class="botao" type="submit">Adicionar ao carrinho • <span data-total>{{ cupcake.preco | brl }}</span></button>
+  </form>
+</article>
+{% endblock %}

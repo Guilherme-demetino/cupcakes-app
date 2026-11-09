@@ -1,0 +1,46 @@
+"""Configuração compartilhada dos testes (fixtures do Pytest).
+
+Os testes de banco usam um banco SEPARADO, informado em TEST_DATABASE_URL
+(veja .env.example). Antes de cada teste ele é apagado e recriado com
+schema.sql + seed.sql, então cada teste começa sempre do mesmo estado.
+"""
+import os
+
+import pytest
+from dotenv import load_dotenv
+
+from app import create_app
+from app.db import executar_scripts
+
+load_dotenv()
+TEST_DATABASE_URL = os.getenv("TEST_DATABASE_URL")
+
+
+@pytest.fixture
+def banco():
+    if not TEST_DATABASE_URL:
+        pytest.skip("Defina TEST_DATABASE_URL no .env para rodar os testes de banco.")
+    executar_scripts(TEST_DATABASE_URL, "schema.sql", "seed.sql")
+    return TEST_DATABASE_URL
+
+
+@pytest.fixture
+def app(banco):
+    return create_app({"TESTING": True, "DATABASE_URL": banco, "SECRET_KEY": "chave-de-teste"})
+
+
+@pytest.fixture
+def client(app):
+    """Simula um navegador fazendo requisições à aplicação."""
+    return app.test_client()
+
+
+@pytest.fixture
+def sql(banco):
+    """Executa SQL direto no banco de teste (para preparar cenários)."""
+    import psycopg
+
+    def executar(comando, params=None):
+        with psycopg.connect(banco, autocommit=True) as conexao:
+            conexao.execute(comando, params)
+    return executar

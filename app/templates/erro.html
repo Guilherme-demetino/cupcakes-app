@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block titulo %}{{ titulo }}{% endblock %}
+{% block cabecalho %}{{ titulo }}{% endblock %}
+
+{% block conteudo %}
+<div class="vazio">
+  <div class="vazio-icone" aria-hidden="true">🧁</div>
+  <p>{{ mensagem }}</p>
+  <a class="botao" href="{{ url_for('catalogo.index') }}">Ver cardápio</a>
+</div>
+{% endblock %}

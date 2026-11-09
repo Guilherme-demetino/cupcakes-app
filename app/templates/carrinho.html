@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block titulo %}Carrinho{% endblock %}
+{% block cabecalho %}Carrinho{% endblock %}
+
+{% block conteudo %}
+{% if desfazer %}
+  <form class="desfazer" action="{{ url_for('carrinho.desfazer') }}" method="post">
+    <input type="hidden" name="cupcake_id" value="{{ desfazer.cupcake_id }}">
+    <input type="hidden" name="quantidade" value="{{ desfazer.quantidade }}">
+    <button type="submit" class="link">↩ Desfazer remoção</button>
+  </form>
+{% endif %}
+
+{% if not resumo.linhas %}
+  <div class="vazio">
+    <div class="vazio-icone" aria-hidden="true">🛒</div>
+    <p>{{ msg_vazio }}</p>
+    <a class="botao" href="{{ url_for('catalogo.index') }}">Ver cardápio</a>
+  </div>
+{% else %}
+  <ul class="itens">
+    {% for linha in resumo.linhas %}
+      {% set c = linha.cupcake %}
+      <li class="item">
+        <img src="{{ c.foto_url }}" alt="" width="64" height="64">
+        <div class="item-info">
+          <a href="{{ url_for('catalogo.detalhe', cupcake_id=c.id) }}" class="item-nome">{{ c.nome }}</a>
+          <span class="legenda">{{ c.preco | brl }} cada</span>
+          <span class="preco">{{ linha.subtotal | brl }}</span>
+        </div>
+        <form action="{{ url_for('carrinho.alterar') }}" method="post" class="quantidade quantidade-pequena">
+          <input type="hidden" name="cupcake_id" value="{{ c.id }}">
+          <button name="quantidade" value="{{ linha.quantidade - 1 }}" aria-label="Diminuir {{ c.nome }}">−</button>
+          <span aria-label="Quantidade">{{ linha.quantidade }}</span>
+          <button name="quantidade" value="{{ linha.quantidade + 1 }}" aria-label="Aumentar {{ c.nome }}">+</button>
+        </form>
+        <form action="{{ url_for('carrinho.remover') }}" method="post">
+          <input type="hidden" name="cupcake_id" value="{{ c.id }}">
+          <button class="remover" aria-label="Remover {{ c.nome }} do carrinho">🗑</button>
+        </form>
+      </li>
+    {% endfor %}
+  </ul>
+
+  <dl class="resumo">
+    <div><dt>Subtotal</dt><dd>{{ resumo.subtotal | brl }}</dd></div>
+    <div><dt>Taxa de entrega</dt><dd>{{ resumo.taxa_entrega | brl }}</dd></div>
+    <div class="total"><dt>Total</dt><dd data-testid="total">{{ resumo.total | brl }}</dd></div>
+  </dl>
+
+  <button class="botao" type="button" disabled title="Disponível na próxima sprint (US07)">Finalizar pedido (em breve)</button>
+  <a class="botao botao-contorno" href="{{ url_for('catalogo.index') }}">Continuar comprando</a>
+{% endif %}
+{% endblock %}

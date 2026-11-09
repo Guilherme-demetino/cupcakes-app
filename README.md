@@ -1,6 +1,6 @@
 # 🧁 CupcakeApp
 
-Loja online responsiva (mobile-first) de cupcakes gourmet: catálogo com detalhes completos e alergênicos, carrinho, pedidos com acompanhamento de status e área administrativa.
+Loja online responsiva (mobile-first) de cupcakes gourmet. Tem catálogo com detalhes completos e alergênicos, carrinho, pedidos com acompanhamento de status e área administrativa.
 
 Projeto Integrador Transdisciplinar em Engenharia de Software II
 **Aluno:** Guilherme França Demetino – RGM 33160236
@@ -10,32 +10,45 @@ Projeto Integrador Transdisciplinar em Engenharia de Software II
 | Etapa | Conteúdo | Status |
 |---|---|---|
 | [Etapa 1 – Planejamento](docs/etapa1-planejamento/) | Escopo, histórias de usuário, UML, IHC, protótipo, banco de dados e dicionário | ✅ Concluída |
-| Etapa 2 – Desenvolvimento | Front-end, back-end MVC, testes unitários e manual de uso | ⏳ Em andamento |
+| [Etapa 2 – Desenvolvimento](docs/etapa2-desenvolvimento/) | Front-end, back-end MVC, testes e manual de uso | 🚧 Sprint 1 concluída (catálogo, detalhes e carrinho) |
 | Etapa 3 – Validação | Testes de verificação e validação, avaliação de 5 usuários, correções e vídeo | ⏳ A fazer |
 
 ## Tecnologias
 
-- **Banco de dados:** PostgreSQL 14+
 - **Front-end:** HTML, CSS e JavaScript
-- **Back-end:** padrão MVC *(linguagem a definir na Etapa 2)*
+- **Back-end:** Python + Flask, no padrão MVC
+- **Banco de dados:** PostgreSQL 14+ (driver psycopg 3)
+- **Testes:** Pytest
 
-## Como criar o banco
+## Como rodar
 
 ```bash
-createdb cupcakeapp
-psql -d cupcakeapp -f database/schema.sql
-psql -d cupcakeapp -f database/seed.sql
+python -m venv .venv
+.venv\Scripts\activate            # Windows  (Linux/macOS: source .venv/bin/activate)
+pip install -r requirements.txt
+copy .env.example .env            # e ajuste a senha do PostgreSQL (Linux/macOS: cp)
+flask --app run init-db           # cria as tabelas e os dados de exemplo
+flask --app run run --debug       # http://127.0.0.1:5000
+pytest                            # roda os testes
 ```
+
+O passo a passo completo está em [docs/etapa2-desenvolvimento](docs/etapa2-desenvolvimento/README.md#como-rodar-no-seu-computador).
 
 ## Estrutura do repositório
 
 ```
 cupcakes-app/
+├── app/                 ← aplicação (MVC)
+│   ├── models/          ← regras de negócio e acesso ao banco
+│   ├── controllers/     ← rotas
+│   ├── templates/       ← telas (HTML)
+│   └── static/          ← CSS, JS e imagens
+├── tests/               ← testes automatizados
+├── database/            ← schema.sql e seed.sql
 ├── docs/
 │   ├── etapa1-planejamento/
 │   ├── etapa2-desenvolvimento/
 │   └── etapa3-validacao/
-├── database/        ← schema.sql e seed.sql
-├── src/             ← código (Etapa 2)
-└── tests/           ← testes (Etapa 2)
+├── requirements.txt
+└── run.py
 ```

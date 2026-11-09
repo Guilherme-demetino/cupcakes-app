@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titulo %}CupcakeApp{% endblock %} – Cupcakes gourmet</title>
+  <link rel="icon" href="{{ url_for('static', filename='img/favicon.svg') }}" type="image/svg+xml">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <script src="{{ url_for('static', filename='js/app.js') }}" defer></script>
+</head>
+<body>
+  <header class="topo">
+    <div class="container topo-linha">
+      {% block voltar %}{% endblock %}
+      <h1 class="topo-titulo">{% block cabecalho %}<a href="{{ url_for('catalogo.index') }}">🧁 CupcakeApp</a>{% endblock %}</h1>
+    </div>
+  </header>
+
+  {# Mensagens de feedback (sucesso, aviso, erro) – catálogo de mensagens da Etapa 1 #}
+  {% with mensagens = get_flashed_messages(with_categories=true) %}
+    {% if mensagens %}
+      <div class="toasts" role="status" aria-live="polite">
+        {% for categoria, texto in mensagens %}
+          <div class="toast toast-{{ categoria }}">
+            <span>{{ texto }}</span>
+            {% if categoria == 'sucesso' and request.endpoint == 'catalogo.detalhe' %}
+              <a href="{{ url_for('carrinho.ver') }}">Ver carrinho</a>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <main class="container conteudo">
+    {% block conteudo %}{% endblock %}
+  </main>
+
+  <nav class="barra-inferior" aria-label="Navegação principal">
+    <a href="{{ url_for('catalogo.index') }}"
+       class="{{ 'ativo' if request.blueprint == 'catalogo' }}"><span aria-hidden="true">🏠</span>Início</a>
+    <a href="{{ url_for('carrinho.ver') }}"
+       class="{{ 'ativo' if request.blueprint == 'carrinho' }}"><span aria-hidden="true">🛒</span>Carrinho
+       {% if qtd_carrinho %}<span class="badge" aria-label="{{ qtd_carrinho }} itens">{{ qtd_carrinho }}</span>{% endif %}</a>
+  </nav>
+</body>
+</html>
