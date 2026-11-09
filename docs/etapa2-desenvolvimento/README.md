@@ -59,12 +59,9 @@ python -m venv .venv
 pip install -r requirements.txt
 
 # 3. Configurar o banco
-#    Crie dois bancos vazios no PostgreSQL (pelo pgAdmin ou pelo terminal):
-createdb -U postgres cupcakeapp
-createdb -U postgres cupcakeapp_test
 #    Copie .env.example para .env e coloque a senha do seu PostgreSQL nas URLs.
 
-# 4. Criar as tabelas e os dados de exemplo
+# 4. Criar o banco (automático), as tabelas e os dados de exemplo
 flask --app run init-db
 
 # 5. Rodar

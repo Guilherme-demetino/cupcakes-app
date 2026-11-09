@@ -27,7 +27,7 @@ python -m venv .venv
 .venv\Scripts\activate            # Windows  (Linux/macOS: source .venv/bin/activate)
 pip install -r requirements.txt
 copy .env.example .env            # e ajuste a senha do PostgreSQL (Linux/macOS: cp)
-flask --app run init-db           # cria as tabelas e os dados de exemplo
+flask --app run init-db           # cria o banco, as tabelas e os dados de exemplo
 flask --app run run --debug       # http://127.0.0.1:5000
 pytest                            # roda os testes
 ```

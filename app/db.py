@@ -41,6 +41,22 @@ def consultar_um(sql, params=None):
     return linhas[0] if linhas else None
 
 
+def criar_banco_se_nao_existir(url):
+    """Cria o banco informado na URL, se ainda não existir (em UTF-8, para os acentos).
+    Conecta no banco padrão 'postgres' do servidor para isso. Devolve True se criou."""
+    from psycopg.conninfo import conninfo_to_dict, make_conninfo
+
+    nome = conninfo_to_dict(url).get("dbname")
+    if not nome or not nome.replace("_", "").isalnum():
+        raise click.ClickException(f"Nome de banco inválido na URL: {nome!r} (use letras, números e _).")
+    with psycopg.connect(make_conninfo(url, dbname="postgres"), autocommit=True) as conexao:
+        existe = conexao.execute("SELECT 1 FROM pg_database WHERE datname = %s", (nome,)).fetchone()
+        if existe:
+            return False
+        conexao.execute(f'CREATE DATABASE "{nome}" ENCODING \'UTF8\' TEMPLATE template0')
+        return True
+
+
 def executar_scripts(url, *arquivos):
     """Roda arquivos .sql inteiros (usado pelo comando init-db e pelos testes)."""
     with psycopg.connect(url, autocommit=True) as conexao:
@@ -50,8 +66,16 @@ def executar_scripts(url, *arquivos):
 
 @click.command("init-db")
 def init_db_command():
-    """Cria as tabelas e carrega os dados de exemplo (APAGA o que existir)."""
-    executar_scripts(current_app.config["DATABASE_URL"], "schema.sql", "seed.sql")
+    """Cria o banco (se preciso), as tabelas e os dados de exemplo (APAGA o que existir)."""
+    url = current_app.config["DATABASE_URL"]
+    try:
+        if criar_banco_se_nao_existir(url):
+            click.echo("Banco de dados criado no PostgreSQL.")
+        executar_scripts(url, "schema.sql", "seed.sql")
+    except psycopg.OperationalError as erro:
+        raise click.ClickException(
+            "Não foi possível conectar ao PostgreSQL. Confira se ele está ligado e se a senha "
+            f"no arquivo .env está correta.\nDetalhe: {erro}") from None
     click.echo("Banco criado e populado com os dados de exemplo.")
 
 

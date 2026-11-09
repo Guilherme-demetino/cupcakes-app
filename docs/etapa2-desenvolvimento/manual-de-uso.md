@@ -27,7 +27,7 @@ O CupcakeApp é a loja online de uma confeitaria de cupcakes gourmet. Pelo celul
 | Programa | Versão | Onde baixar | Observação |
 |---|---|---|---|
 | **Python** | 3.11 ou superior | python.org/downloads | No Windows, marque **"Add python.exe to PATH"** na primeira tela do instalador |
-| **PostgreSQL** | 14 ou superior | postgresql.org/download | Anote a **senha** do usuário `postgres` criada durante a instalação. O **pgAdmin** já vem junto |
+| **PostgreSQL** | 14 ou superior | postgresql.org/download | Anote a **senha** do usuário `postgres` criada durante a instalação |
 | **Git** *(opcional)* | qualquer | git-scm.com | Só é necessário para baixar com `git clone`. Também dá para baixar o .zip pelo GitHub |
 
 ### 1.2 Passo a passo (Windows)
@@ -39,11 +39,7 @@ git clone https://github.com/Guilherme-demetino/cupcakes-app.git
 cd cupcakes-app
 ```
 
-**Passo 2 – Criar os bancos de dados.** Abra o **pgAdmin** e, no painel da esquerda, abra *Servers → PostgreSQL*. Clique com o botão direito em **Databases → Create → Database…** e crie dois bancos:
-- `cupcakeapp` (usado pelo sistema)
-- `cupcakeapp_test` (usado só pelos testes automáticos)
-
-**Passo 3 – Configurar a senha do banco.** Na pasta do projeto, copie o arquivo `.env.example` com o nome `.env`. Abra o `.env` no Bloco de Notas e troque a segunda palavra `postgres` (a senha) pela senha que você criou na instalação:
+**Passo 2 – Configurar a senha do banco.** Na pasta do projeto, copie o arquivo `.env.example` com o nome `.env`. Abra o `.env` no Bloco de Notas e troque a segunda palavra `postgres` (a senha) pela senha que você criou na instalação:
 
 ```ini
 DATABASE_URL=postgresql://postgres:SUA_SENHA@localhost:5432/cupcakeapp
@@ -51,7 +47,7 @@ SECRET_KEY=qualquer-frase-longa-e-secreta
 TEST_DATABASE_URL=postgresql://postgres:SUA_SENHA@localhost:5432/cupcakeapp_test
 ```
 
-**Passo 4 – Instalar as dependências.** Abra o terminal (PowerShell) na pasta do projeto:
+**Passo 3 – Instalar as dependências.** Abra o terminal (PowerShell) na pasta do projeto:
 
 ```powershell
 python -m venv .venv
@@ -61,17 +57,17 @@ pip install -r requirements.txt
 
 > Quando o ambiente virtual está ativo, aparece `(.venv)` no começo da linha do terminal. Repita o `activate` sempre que abrir um terminal novo.
 
-**Passo 5 – Criar as tabelas e os dados de exemplo** (só na primeira vez):
+**Passo 4 – Criar o banco, as tabelas e os dados de exemplo** (só na primeira vez):
 
 ```powershell
 flask --app run init-db
 ```
 
-A mensagem esperada é **"Banco criado e populado com os dados de exemplo."**
+Na primeira vez, o comando **cria o banco `cupcakeapp` sozinho** (em UTF-8, para os acentos aparecerem certos). Não é preciso abrir o pgAdmin. A mensagem esperada é **"Banco criado e populado com os dados de exemplo."**
 
 > ⚠️ Este comando **apaga e recria** todo o banco. Use-o de novo só quando quiser voltar aos dados de exemplo.
 
-**Passo 6 – Abrir o sistema:**
+**Passo 5 – Abrir o sistema:**
 
 ```powershell
 flask --app run run --debug
@@ -79,7 +75,7 @@ flask --app run run --debug
 
 Abra o navegador em **http://127.0.0.1:5000**. Para parar o sistema, aperte `Ctrl + C` no terminal.
 
-> **Linux / macOS:** os comandos são os mesmos, com três diferenças: use `source .venv/bin/activate` no lugar de `.venv\Scripts\activate`, `cp .env.example .env` para copiar o arquivo, e `createdb cupcakeapp` para criar os bancos pelo terminal.
+> **Linux / macOS:** os comandos são os mesmos, com duas diferenças: use `source .venv/bin/activate` no lugar de `.venv\Scripts\activate` e `cp .env.example .env` para copiar o arquivo.
 
 ---
 
@@ -284,9 +280,8 @@ Toque em **Salvar**. Se algo estiver faltando, os campos com problema ficam em v
 | `'python' não é reconhecido…` | O Python não foi adicionado ao PATH | Reinstale o Python marcando **"Add python.exe to PATH"** |
 | `…não pode ser carregado porque a execução de scripts foi desabilitada` (ao ativar o `.venv`) | Bloqueio de segurança do PowerShell | Rode uma vez: `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` e responda **S** |
 | `'flask' não é reconhecido…` | O ambiente virtual não está ativo | Rode `.venv\Scripts\activate` (aparece `(.venv)` na linha) |
-| `password authentication failed for user "postgres"` | Senha errada no `.env` | Corrija a senha nas duas linhas do `.env` |
+| `Não foi possível conectar ao PostgreSQL…` ou `password authentication failed` | Senha errada no `.env` ou PostgreSQL desligado | Corrija a senha nas duas linhas do `.env`. Se a senha estiver certa, veja a linha abaixo |
 | `connection refused` / `could not connect to server` | O PostgreSQL não está rodando | Windows: abra **Serviços**, procure **postgresql** e clique em **Iniciar** |
-| `database "cupcakeapp" does not exist` | O banco não foi criado | Refaça o Passo 2 |
 | `function gen_salt(...) does not exist` | A extensão pgcrypto não está disponível | Ela vem com o instalador oficial do PostgreSQL. No Linux, instale o pacote `postgresql-contrib` |
 | O endereço não é preenchido pelo CEP | Sem internet ou o serviço ViaCEP está fora do ar | Digite o endereço manualmente. Todo o resto funciona normalmente |
 | As fotos dos cupcakes não aparecem | O sistema foi aberto a partir de outra pasta | Rode os comandos **dentro** da pasta `cupcakes-app` |
@@ -297,7 +292,7 @@ Toque em **Salvar**. Se algo estiver faltando, os campos com problema ficam em v
 
 ## 7. Para desenvolvedores: rodando os testes
 
-Com o ambiente virtual ativo e o banco `cupcakeapp_test` criado (Passo 2):
+Com o ambiente virtual ativo (o banco de teste `cupcakeapp_test` é criado sozinho na primeira execução):
 
 ```powershell
 pytest
