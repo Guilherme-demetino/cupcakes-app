@@ -48,7 +48,7 @@
     <div class="total"><dt>Total</dt><dd data-testid="total">{{ resumo.total | brl }}</dd></div>
   </dl>
 
-  <button class="botao" type="button" disabled title="Disponível na próxima sprint (US07)">Finalizar pedido (em breve)</button>
+  <a class="botao" href="{{ url_for('pedido.checkout') }}">Finalizar pedido</a>
   <a class="botao botao-contorno" href="{{ url_for('catalogo.index') }}">Continuar comprando</a>
 {% endif %}
 {% endblock %}

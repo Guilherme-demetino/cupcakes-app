@@ -155,3 +155,43 @@ h3 { font-size: 16px; margin-bottom: 8px; }
 .botao-sair { background: transparent; color: var(--erro); border: 1px solid var(--erro); margin-top: 24px; }
 .botao-sair:hover { background: #FFEBEE; }
 .barra-inferior a { max-width: none; }
+
+/* Pedidos (Sprint 3) */
+.titulo-secao { font-size: 17px; margin: 8px 0 10px; }
+.resumo-compacto { margin: 0; }
+.resumo-compacto dt { padding-right: 12px; }
+.resumo-compacto dd { white-space: nowrap; }
+.duas-colunas { display: grid; grid-template-columns: 1fr 1.6fr; gap: 10px; }
+.duas-colunas-uf { grid-template-columns: 1fr 96px; }
+.campo select, .campo textarea { width: 100%; padding: 12px; min-height: 48px; border: 1px solid var(--linha);
+                                 border-radius: 10px; font: inherit; background: var(--cartao); color: var(--secundaria); }
+.campo select.invalido { border-color: var(--erro); border-width: 2px; }
+.pagamento { border: none; margin: 8px 0 14px; }
+.opcoes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.opcao { display: flex; align-items: center; justify-content: center; text-align: center; min-height: 52px;
+         padding: 8px; border: 1px solid var(--linha); border-radius: 10px; background: var(--cartao);
+         cursor: pointer; font-size: 14px; }
+.opcao input { position: absolute; opacity: 0; }
+.opcao:has(input:checked) { border: 2px solid var(--primaria); color: var(--primaria); font-weight: 700; }
+.opcao:has(input:focus-visible) { outline: 3px solid var(--primaria); outline-offset: 2px; }
+.confirmacao h2 { color: var(--secundaria); margin-bottom: 8px; }
+.confirmacao .botao { max-width: 360px; margin: 12px auto 0; }
+.confirmacao form .botao { margin-top: 10px; }
+.lista-pedidos { list-style: none; }
+.item-pedido { text-decoration: none; justify-content: space-between; }
+.status { display: inline-block; font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 999px; white-space: nowrap; }
+.status-RECEBIDO { background: #E3F2FD; color: #0D47A1; }
+.status-EM_PREPARO { background: #FFF3E0; color: var(--aviso); }
+.status-SAIU_PARA_ENTREGA { background: #EDE7F6; color: #4527A0; }
+.status-ENTREGUE { background: #E8F5E9; color: var(--sucesso); }
+.status-CANCELADO { background: #FFEBEE; color: var(--erro); }
+.linha-tempo { list-style: none; border-left: 3px solid var(--linha); margin: 16px 0 16px 8px; padding-left: 18px; }
+.linha-tempo li { position: relative; padding: 6px 0; color: var(--suave); }
+.linha-tempo li::before { content: ""; position: absolute; left: -27px; top: 11px; width: 15px; height: 15px;
+                          border-radius: 50%; background: var(--linha); border: 2px solid var(--fundo); }
+.linha-tempo li.feito { color: var(--secundaria); }
+.linha-tempo li.feito::before { background: var(--sucesso); }
+.linha-tempo li.atual { font-weight: 700; }
+.linha-tempo li.cancelado::before { background: var(--erro); }
+.linha-tempo .legenda { display: block; font-weight: 400; }
+.sem-quebra { white-space: nowrap; }

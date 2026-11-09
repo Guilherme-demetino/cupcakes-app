@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block titulo %}Pedido confirmado{% endblock %}
+{% block cabecalho %}Pedido confirmado{% endblock %}
+
+{% block conteudo %}
+<div class="vazio confirmacao">
+  <div class="vazio-icone" aria-hidden="true">✅</div>
+  {# MSG21 dividida em título + texto, para não repetir a frase #}
+  {% set titulo_msg, resto_msg = mensagem.split('! ', 1) %}
+  <h2>{{ titulo_msg }}!</h2>
+  <p>{{ resto_msg }}</p>
+  <p class="legenda">Total {{ pedido.valor_total | brl }} • pagamento na entrega • previsão de 40 a 60 minutos</p>
+  <a class="botao" href="{{ url_for('pedido.detalhe', pedido_id=pedido.id) }}">Acompanhar pedido</a>
+  <a class="botao botao-contorno" href="{{ url_for('catalogo.index') }}">Voltar ao início</a>
+</div>
+{% endblock %}

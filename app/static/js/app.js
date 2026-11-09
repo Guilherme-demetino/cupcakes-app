@@ -57,6 +57,36 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  // Checkout (Sprint 3): máscara do CEP e preenchimento automático do endereço pelo ViaCEP.
+  // Se o serviço estiver fora do ar, nada quebra: o cliente digita o endereço normalmente.
+  document.querySelectorAll("[data-cep]").forEach((campo) => {
+    const preencher = (id, valor) => { const el = document.getElementById(id); if (el && valor) el.value = valor; };
+    campo.addEventListener("input", async () => {
+      const d = campo.value.replace(/\D/g, "").slice(0, 8);
+      campo.value = d.length > 5 ? `${d.slice(0, 5)}-${d.slice(5)}` : d;
+      if (d.length !== 8) return;
+      try {
+        const r = await fetch(`https://viacep.com.br/ws/${d}/json/`);
+        const end = await r.json();
+        if (end.erro) return;
+        preencher("logradouro", end.logradouro);
+        preencher("bairro", end.bairro);
+        preencher("cidade", end.localidade);
+        preencher("uf", end.uf);
+        document.getElementById("numero")?.focus();
+      } catch (e) { /* sem internet ou serviço fora: segue manual */ }
+    });
+  });
+
+  // Evita enviar o pedido duas vezes com clique duplo
+  document.querySelectorAll("form[data-checkout]").forEach((form) => {
+    form.addEventListener("submit", () => {
+      const botao = form.querySelector("button[type=submit]");
+      botao.disabled = true;
+      botao.textContent = "Enviando pedido…";
+    });
+  });
+
   // Toasts somem sozinhos depois de 4 segundos
   const esconder = (toast) => {
     toast.classList.add("sumindo");

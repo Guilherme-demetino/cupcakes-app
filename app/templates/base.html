@@ -43,6 +43,8 @@
        class="{{ 'ativo' if request.blueprint == 'carrinho' }}"><span aria-hidden="true">🛒</span>Carrinho
        {% if qtd_carrinho %}<span class="badge" aria-label="{{ qtd_carrinho }} itens">{{ qtd_carrinho }}</span>{% endif %}</a>
     {% if usuario %}
+      <a href="{{ url_for('pedido.lista') }}"
+         class="{{ 'ativo' if request.blueprint == 'pedido' }}"><span aria-hidden="true">📦</span>Pedidos</a>
       <a href="{{ url_for('auth.conta') }}"
          class="{{ 'ativo' if request.blueprint == 'auth' }}"><span aria-hidden="true">👤</span>{{ usuario.nome.split()[0] }}</a>
     {% else %}

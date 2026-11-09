@@ -22,15 +22,18 @@ app/
 ├── models/                  ← M: regras de negócio e acesso aos dados
 │   ├── cupcake_model.py     ←   consultas do catálogo (US03, US04, US05)
 │   ├── carrinho.py          ←   classe Carrinho: RN03, RN04, RN06 (US06)
-│   └── usuario_model.py     ←   cadastro e login, senha com bcrypt (US01, US02, RN08, RN09)
+│   ├── usuario_model.py     ←   cadastro e login, senha com bcrypt (US01, US02, RN08, RN09)
+│   └── pedido_model.py      ←   checkout, pedidos e cancelamento (US07–US09, RN05, RN06, RN07, RN10)
 ├── controllers/             ← C: recebem a requisição, chamam o model e escolhem a view
 │   ├── catalogo_controller.py
 │   ├── carrinho_controller.py
-│   └── auth_controller.py
+│   ├── auth_controller.py
+│   └── pedido_controller.py
 ├── auth.py                  ← quem está logado; decorators @login_obrigatorio e @admin_obrigatorio
 ├── templates/               ← V: telas em HTML (Jinja2)
 │   ├── base.html  catalogo.html  detalhe.html  carrinho.html  erro.html
 │   ├── login.html  cadastro.html  conta.html  _campo.html
+│   ├── checkout.html  confirmacao.html  pedidos.html  pedido.html  cancelar.html
 └── static/                  ← CSS, JavaScript e imagens
 tests/                       ← testes automatizados (Pytest)
 ```
@@ -100,7 +103,7 @@ pytest
 
 **Observações:**
 - As imagens dos cupcakes são **ilustrações provisórias** em WebP, com cerca de 5 KB cada (RNF01: ≤ 200 KB). Para trocar pelas fotos reais, basta salvar os arquivos com o mesmo nome em `app/static/img/cupcakes/`.
-- O botão "Finalizar pedido" aparece desativado, com o texto "em breve", até a Sprint 3 (US07).
+- O botão "Finalizar pedido" ficou desativado até a Sprint 3, quando passou a funcionar.
 
 ### Sprint 2 – Cadastro e login (US01, US02) ✅
 
@@ -140,9 +143,46 @@ Depois de desfazer as mudanças, os 96 testes voltaram a passar.
 
 **Limitação conhecida:** ainda não há bloqueio depois de muitas tentativas de login erradas. Isso fica registrado como melhoria futura.
 
+### Sprint 3 – Checkout e acompanhamento de pedidos (US07, US08, US09) ✅
+
+| História | O que foi feito | Arquivos principais |
+|---|---|---|
+| **US07** Finalizar pedido | O botão "Finalizar pedido" do carrinho leva ao checkout. Quem não está logado vai para o login e volta com o carrinho intacto. O endereço vem preenchido com o último usado, e o CEP preenche rua, bairro e cidade automaticamente (ViaCEP). O cliente escolhe o pagamento na entrega (PIX, cartão ou dinheiro) e pode deixar uma observação. Pedido, itens e endereço são gravados numa **única transação**: ou grava tudo, ou nada. O carrinho é esvaziado e aparece a confirmação com o número do pedido (MSG21). | `pedido_model.criar`, `pedido_controller.checkout/confirmar`, `checkout.html`, `confirmacao.html` |
+| **US08** Meus pedidos | Lista do mais recente para o mais antigo, com data, quantidade de itens, total e um selo colorido de status. O detalhe mostra a **linha do tempo** com data e hora de cada etapa, os itens com o preço pago, o endereço, a forma de pagamento e a observação. | `pedido_model.listar_do_usuario/buscar_do_usuario`, `pedidos.html`, `pedido.html` |
+| **US09** Cancelar pedido | O botão aparece só enquanto o pedido está **Recebido**. Antes de cancelar, o sistema pede confirmação (MSG18). O cancelamento é um `UPDATE` com condição, então dois cliques ao mesmo tempo não causam problema. | `pedido_model.cancelar_pelo_cliente`, `cancelar.html` |
+
+![Telas da Sprint 3](img/sprint3-celular.png)
+*Checkout com CEP inválido (MSG06), confirmação (MSG21), Meus pedidos, detalhe com linha do tempo, confirmação de cancelamento (MSG18) e pedido cancelado.*
+
+**Regras de negócio aplicadas e testadas:**
+
+| Regra | Como foi garantida | Teste que comprova |
+|---|---|---|
+| RN05 Preço congelado | O preço do momento da compra é gravado em `item_pedido.preco_unitario` | `test_preco_fica_congelado_no_pedido`: o preço do cupcake muda depois e o pedido não muda |
+| RN06 Total | Calculado pela classe `Carrinho` e gravado em `pedido.valor_total` | `test_finalizar_pedido_com_sucesso`: 2× 12,90 + 1× 14,50 + 8,00 = **R$ 48,30** |
+| RN07 Status | `pode_mudar_status()` no código + gatilho no banco | 11 combinações testadas em `test_pode_mudar_status` |
+| RN10 Login e endereço | `@login_obrigatorio` + validação MSG06/MSG07 | `test_checkout_sem_login_vai_para_login_e_volta`, `test_cep_invalido_mostra_msg06_e_nao_grava` |
+| RN04 Item que saiu do cardápio | O carrinho é conferido de novo ao confirmar; o cliente volta ao carrinho com MSG15 e nada é gravado | `test_cupcake_desativado_durante_a_compra_mostra_msg15` |
+| Privacidade | Um cliente nunca vê nem cancela o pedido de outro. A resposta é 404, sem revelar que o número existe | `test_cliente_nao_ve_pedido_de_outro_cliente` |
+| Pedido duplicado | O carrinho é esvaziado ao gravar, e o botão é desativado depois do clique | `test_enviar_o_pedido_duas_vezes_nao_duplica` |
+
+**Os testes pegam as falhas?** Introduzi cinco falhas de propósito e rodei os testes de novo:
+
+| Falha introduzida | Testes que falharam |
+|---|---|
+| Mostrar o preço atual em vez do preço pago (RN05) | 1 |
+| Cliente consegue ver o pedido de outro | 11 |
+| Cancelar um pedido que já está em preparo (RN07) | 2 |
+| Gravar o total sem a taxa de entrega (RN06) | 3 |
+| Aceitar CEP incompleto | 4 |
+
+Depois de desfazer as mudanças, todos voltaram a passar.
+
+**Observação:** o preenchimento pelo CEP usa o serviço gratuito ViaCEP direto no navegador. Se ele estiver fora do ar, nada quebra e o cliente digita o endereço normalmente. Esse recurso precisa de internet, por isso não pôde ser testado no ambiente usado para os testes automáticos. Vale conferir manualmente.
+
 ## Testes automatizados (total acumulado)
 
-**96 testes, todos passando.** Para rodar: `pytest`.
+**148 testes, todos passando.** Para rodar: `pytest`.
 
 | Arquivo | Tipo | Qtd. | Sprint |
 |---|---|---|---|
@@ -151,7 +191,8 @@ Depois de desfazer as mudanças, os 96 testes voltaram a passar.
 | `tests/test_rotas.py` | Integração (simula o navegador) | 19 | 1 |
 | `tests/test_usuario_model.py` | Unitário + integração | 30 | 2 |
 | `tests/test_rotas_auth.py` | Integração (simula o navegador) | 21 | 2 |
+| `tests/test_pedido_model.py` | Unitário + integração | 34 | 3 |
+| `tests/test_rotas_pedido.py` | Integração (simula o navegador) | 18 | 3 |
 
-### Sprint 3 – Checkout e acompanhamento de pedidos (US07, US08, US09) ⏳
 ### Sprint 4 – Área administrativa (US10, US11) ⏳
 ### Manual de uso ⏳

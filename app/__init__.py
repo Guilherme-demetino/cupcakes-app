@@ -36,9 +36,11 @@ def create_app(config=None):
     from .controllers.catalogo_controller import bp as catalogo_bp
     from .controllers.carrinho_controller import bp as carrinho_bp
     from .controllers.auth_controller import bp as auth_bp
+    from .controllers.pedido_controller import bp as pedido_bp
     app.register_blueprint(catalogo_bp)
     app.register_blueprint(carrinho_bp)
     app.register_blueprint(auth_bp)
+    app.register_blueprint(pedido_bp)
 
     # ---- Filtros e variáveis disponíveis em todos os templates ----
     @app.template_filter("brl")
@@ -48,6 +50,11 @@ def create_app(config=None):
         inteiro, centavos = f"{valor:.2f}".split(".")
         inteiro = f"{int(inteiro):,}".replace(",", ".")
         return f"R$ {inteiro},{centavos}"
+
+    @app.template_filter("data_hora")
+    def formatar_data_hora(valor):
+        """datetime -> '09/11/2026 às 14:35'"""
+        return valor.strftime("%d/%m/%Y às %H:%M") if valor else ""
 
     @app.context_processor
     def dados_globais():

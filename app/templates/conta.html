@@ -13,8 +13,8 @@
     </dl>
   </div>
 
+  <a class="botao" href="{{ url_for('pedido.lista') }}">Meus pedidos</a>
   <a class="botao botao-contorno" href="{{ url_for('carrinho.ver') }}">Ver meu carrinho</a>
-  <button class="botao botao-contorno" type="button" disabled title="Disponível na Sprint 3 (US08)">Meus pedidos (em breve)</button>
 
   <form method="post" action="{{ url_for('auth.logout') }}">
     <button class="botao botao-sair" type="submit">Sair da conta</button>

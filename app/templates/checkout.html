@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% from "_campo.html" import campo %}
+{% block titulo %}Finalizar pedido{% endblock %}
+{% block voltar %}<a class="voltar" href="{{ url_for('carrinho.ver') }}" aria-label="Voltar ao carrinho">←</a>{% endblock %}
+{% block cabecalho %}Finalizar pedido{% endblock %}
+
+{% block conteudo %}
+<div class="formulario">
+  <section class="cartao-dados" aria-labelledby="titulo-resumo">
+    <h2 id="titulo-resumo" class="titulo-secao">Resumo</h2>
+    <dl class="resumo resumo-compacto">
+      {% for linha in resumo.linhas %}
+        <div><dt>{{ linha.quantidade }}× {{ linha.cupcake.nome }}</dt><dd>{{ linha.subtotal | brl }}</dd></div>
+      {% endfor %}
+      <div><dt>Taxa de entrega</dt><dd>{{ resumo.taxa_entrega | brl }}</dd></div>
+      <div class="total"><dt>Total</dt><dd data-testid="total">{{ resumo.total | brl }}</dd></div>
+    </dl>
+  </section>
+
+  {% if erros %}
+    <div class="alerta alerta-erro" role="alert">Confira os campos destacados abaixo.</div>
+  {% endif %}
+
+  <form method="post" action="{{ url_for('pedido.confirmar') }}" novalidate data-checkout>
+    <h2 class="titulo-secao">Endereço de entrega</h2>
+    {{ campo('cep', 'CEP', endereco.cep, erro=erros.cep, dica='Digite o CEP para preencher o endereço.',
+             attrs='inputmode="numeric" autocomplete="postal-code" placeholder="00000-000" maxlength="9" required data-cep') }}
+    {{ campo('logradouro', 'Rua / Avenida', endereco.logradouro, erro=erros.logradouro, attrs='autocomplete="address-line1" maxlength="150" required') }}
+    <div class="duas-colunas">
+      {{ campo('numero', 'Número', endereco.numero, erro=erros.numero, attrs='maxlength="10" required') }}
+      {{ campo('complemento', 'Complemento', endereco.complemento, erro=erros.complemento, attrs='maxlength="60" placeholder="Apto, bloco…"') }}
+    </div>
+    {{ campo('bairro', 'Bairro', endereco.bairro, erro=erros.bairro, attrs='maxlength="80" required') }}
+    <div class="duas-colunas duas-colunas-uf">
+      {{ campo('cidade', 'Cidade', endereco.cidade, erro=erros.cidade, attrs='autocomplete="address-level2" maxlength="80" required') }}
+      <div class="campo">
+        <label for="uf">Estado</label>
+        <select id="uf" name="uf" required {% if erros.uf %}aria-invalid="true" class="invalido" aria-describedby="erro-uf"{% endif %}>
+          <option value="">UF</option>
+          {% for uf in ufs %}<option {{ 'selected' if endereco.uf == uf }}>{{ uf }}</option>{% endfor %}
+        </select>
+        {% if erros.uf %}<p class="erro-campo" id="erro-uf">{{ erros.uf }}</p>{% endif %}
+      </div>
+    </div>
+
+    <fieldset class="pagamento" {% if erros.forma_pagamento %}aria-describedby="erro-forma"{% endif %}>
+      <legend class="titulo-secao">Pagamento na entrega</legend>
+      <div class="opcoes">
+        {% for codigo, nome in formas.items() %}
+          <label class="opcao"><input type="radio" name="forma_pagamento" value="{{ codigo }}" {{ 'checked' if forma == codigo }}><span>{{ nome }}</span></label>
+        {% endfor %}
+      </div>
+      {% if erros.forma_pagamento %}<p class="erro-campo" id="erro-forma">{{ erros.forma_pagamento }}</p>{% endif %}
+    </fieldset>
+
+    <div class="campo">
+      <label for="observacao">Observação (opcional)</label>
+      <textarea id="observacao" name="observacao" rows="2" maxlength="255" placeholder="Ex.: troco para R$ 50, tocar o interfone 12">{{ observacao }}</textarea>
+      {% if erros.observacao %}<p class="erro-campo">{{ erros.observacao }}</p>{% endif %}
+    </div>
+
+    <button class="botao" type="submit">Confirmar pedido • {{ resumo.total | brl }}</button>
+  </form>
+</div>
+{% endblock %}

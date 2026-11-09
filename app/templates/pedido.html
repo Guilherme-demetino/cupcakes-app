@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block titulo %}Pedido nº {{ pedido.id }}{% endblock %}
+{% block voltar %}<a class="voltar" href="{{ url_for('pedido.lista') }}" aria-label="Voltar para meus pedidos">←</a>{% endblock %}
+{% block cabecalho %}Pedido nº {{ pedido.id }}{% endblock %}
+
+{% block conteudo %}
+<div class="formulario">
+  <p><span class="status status-{{ pedido.status }}">{{ nomes_status[pedido.status] }}</span>
+     <span class="legenda">feito em {{ pedido.criado_em | data_hora }}</span></p>
+
+  {# Linha do tempo do status (US08) #}
+  {% set datas = {} %}
+  {% for h in pedido.historico %}{% set _ = datas.update({h.status: h.alterado_em}) %}{% endfor %}
+  <ol class="linha-tempo" aria-label="Andamento do pedido">
+    {% if pedido.status == 'CANCELADO' %}
+      <li class="feito">Pedido recebido <span class="legenda">{{ datas.get('RECEBIDO') | data_hora }}</span></li>
+      <li class="feito cancelado">Pedido cancelado <span class="legenda">{{ datas.get('CANCELADO') | data_hora }}</span></li>
+    {% else %}
+      {% set atual = etapas.index(pedido.status) %}
+      {% for etapa in etapas %}
+        <li class="{{ 'feito' if loop.index0 <= atual }}{{ ' atual' if loop.index0 == atual }}"
+            {% if loop.index0 == atual %}aria-current="step"{% endif %}>
+          {{ nomes_status[etapa] }}
+          {% if datas.get(etapa) %}<span class="legenda">{{ datas.get(etapa) | data_hora }}</span>{% endif %}
+        </li>
+      {% endfor %}
+    {% endif %}
+  </ol>
+
+  <section class="cartao-dados">
+    <h2 class="titulo-secao">Itens</h2>
+    <dl class="resumo resumo-compacto">
+      {% for item in pedido.itens %}
+        <div><dt>{{ item.quantidade }}× {{ item.nome }} <span class="legenda">({{ item.preco_unitario | brl }} cada)</span></dt>
+             <dd>{{ item.subtotal | brl }}</dd></div>
+      {% endfor %}
+      <div><dt>Taxa de entrega</dt><dd>{{ pedido.taxa_entrega | brl }}</dd></div>
+      <div class="total"><dt>Total</dt><dd>{{ pedido.valor_total | brl }}</dd></div>
+    </dl>
+  </section>
+
+  <section class="cartao-dados">
+    <h2 class="titulo-secao">Entrega e pagamento</h2>
+    <p>{{ pedido.logradouro }}, {{ pedido.numero }}{% if pedido.complemento %} – {{ pedido.complemento }}{% endif %}<br>
+       {{ pedido.bairro }} – {{ pedido.cidade }}/{{ pedido.uf }} • CEP {{ pedido.cep[:5] }}-{{ pedido.cep[5:] }}</p>
+    <p class="legenda">Pagamento na entrega: {{ formas[pedido.forma_pagamento] }}</p>
+    {% if pedido.observacao %}<p class="legenda">Observação: {{ pedido.observacao }}</p>{% endif %}
+  </section>
+
+  {% if pedido.pode_cancelar %}
+    <a class="botao botao-sair" href="{{ url_for('pedido.confirmar_cancelamento', pedido_id=pedido.id) }}">Cancelar pedido</a>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block titulo %}Meus pedidos{% endblock %}
+{% block cabecalho %}Meus pedidos{% endblock %}
+
+{% block conteudo %}
+<div class="formulario">
+{% if not pedidos %}
+  <div class="vazio">
+    <div class="vazio-icone" aria-hidden="true">📦</div>
+    <p>Você ainda não fez nenhum pedido.</p>
+    <a class="botao" href="{{ url_for('catalogo.index') }}">Ver cardápio</a>
+  </div>
+{% else %}
+  <ul class="lista-pedidos">
+    {% for p in pedidos %}
+      <li>
+        <a class="item item-pedido" href="{{ url_for('pedido.detalhe', pedido_id=p.id) }}">
+          <div class="item-info">
+            <span class="item-nome">Pedido nº {{ p.id }}</span>
+            <span class="legenda">{{ p.criado_em | data_hora }} • {{ p.qtd_itens }} {{ 'item' if p.qtd_itens == 1 else 'itens' }} • <span class="sem-quebra">{{ p.valor_total | brl }}</span></span>
+          </div>
+          <span class="status status-{{ p.status }}">{{ nomes_status[p.status] }}</span>
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+{% endif %}
+</div>
+{% endblock %}
