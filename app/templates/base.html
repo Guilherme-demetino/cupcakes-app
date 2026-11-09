@@ -37,6 +37,16 @@
   </main>
 
   <nav class="barra-inferior" aria-label="Navegação principal">
+  {% if usuario and usuario.perfil == 'ADMIN' %}
+    <a href="{{ url_for('admin.pedidos') }}"
+       class="{{ 'ativo' if request.endpoint and request.endpoint.startswith('admin.pedido') }}"><span aria-hidden="true">📋</span>Pedidos</a>
+    <a href="{{ url_for('admin.cupcakes') }}"
+       class="{{ 'ativo' if request.endpoint and 'cupcake' in request.endpoint and request.blueprint == 'admin' }}"><span aria-hidden="true">🧁</span>Cupcakes</a>
+    <a href="{{ url_for('catalogo.index') }}"
+       class="{{ 'ativo' if request.blueprint == 'catalogo' }}"><span aria-hidden="true">🏪</span>Ver loja</a>
+    <a href="{{ url_for('auth.conta') }}"
+       class="{{ 'ativo' if request.blueprint == 'auth' }}"><span aria-hidden="true">👤</span>{{ usuario.nome.split()[0] }}</a>
+  {% else %}
     <a href="{{ url_for('catalogo.index') }}"
        class="{{ 'ativo' if request.blueprint == 'catalogo' }}"><span aria-hidden="true">🏠</span>Início</a>
     <a href="{{ url_for('carrinho.ver') }}"
@@ -51,6 +61,7 @@
       <a href="{{ url_for('auth.login') }}"
          class="{{ 'ativo' if request.blueprint == 'auth' }}"><span aria-hidden="true">👤</span>Entrar</a>
     {% endif %}
+  {% endif %}
   </nav>
 </body>
 </html>

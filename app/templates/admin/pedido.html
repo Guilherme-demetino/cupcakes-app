@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block titulo %}Admin • Pedido nº {{ pedido.id }}{% endblock %}
+{% block voltar %}<a class="voltar" href="{{ url_for('admin.pedidos') }}" aria-label="Voltar aos pedidos">←</a>{% endblock %}
+{% block cabecalho %}Pedido nº {{ pedido.id }}{% endblock %}
+
+{% block conteudo %}
+<div class="formulario">
+  <p><span class="status status-{{ pedido.status }}">{{ nomes_status[pedido.status] }}</span>
+     <span class="legenda">feito em {{ pedido.criado_em | data_hora }}</span></p>
+
+  {# Ações permitidas pela RN07 a partir do status atual #}
+  {% set avancos = pedido.proximos | reject('equalto', 'CANCELADO') | list %}
+  {% for novo in avancos %}
+    <form method="post" action="{{ url_for('admin.mudar_status', pedido_id=pedido.id) }}">
+      <input type="hidden" name="atual" value="{{ pedido.status }}">
+      <input type="hidden" name="novo" value="{{ novo }}">
+      <button class="botao" type="submit">{{ acoes[novo] }} → {{ nomes_status[novo] }}</button>
+    </form>
+  {% endfor %}
+
+  <section class="cartao-dados">
+    <h2 class="titulo-secao">Cliente</h2>
+    <p><strong>{{ pedido.cliente.nome }}</strong><br>
+       <a href="tel:{{ pedido.cliente.telefone }}">{{ pedido.cliente.telefone or '—' }}</a> • {{ pedido.cliente.email }}</p>
+    <p class="legenda">{{ pedido.logradouro }}, {{ pedido.numero }}{% if pedido.complemento %} – {{ pedido.complemento }}{% endif %},
+       {{ pedido.bairro }} – {{ pedido.cidade }}/{{ pedido.uf }} • CEP {{ pedido.cep[:5] }}-{{ pedido.cep[5:] }}</p>
+    <p class="legenda">Pagamento na entrega: <strong>{{ formas[pedido.forma_pagamento] }}</strong></p>
+    {% if pedido.observacao %}<p class="alerta">📝 {{ pedido.observacao }}</p>{% endif %}
+  </section>
+
+  <section class="cartao-dados">
+    <h2 class="titulo-secao">Itens para preparar</h2>
+    <dl class="resumo resumo-compacto">
+      {% for item in pedido.itens %}
+        <div><dt><strong>{{ item.quantidade }}×</strong> {{ item.nome }}</dt><dd>{{ item.subtotal | brl }}</dd></div>
+      {% endfor %}
+      <div><dt>Taxa de entrega</dt><dd>{{ pedido.taxa_entrega | brl }}</dd></div>
+      <div class="total"><dt>Total a receber</dt><dd>{{ pedido.valor_total | brl }}</dd></div>
+    </dl>
+  </section>
+
+  <section class="cartao-dados">
+    <h2 class="titulo-secao">Histórico</h2>
+    <ol class="linha-tempo">
+      {% for h in pedido.historico %}
+        <li class="feito {{ 'cancelado' if h.status == 'CANCELADO' }}">{{ nomes_status[h.status] }}
+          <span class="legenda">{{ h.alterado_em | data_hora }}</span></li>
+      {% endfor %}
+    </ol>
+  </section>
+
+  {% if 'CANCELADO' in pedido.proximos %}
+    {# Cancelar exige um segundo clique de confirmação (MSG18), sem precisar de JavaScript #}
+    <details class="confirmar-cancelamento">
+      <summary class="botao botao-sair">Cancelar pedido</summary>
+      <p><strong>Cancelar o pedido nº {{ pedido.id }}? Esta ação não pode ser desfeita.</strong></p>
+      <form method="post" action="{{ url_for('admin.mudar_status', pedido_id=pedido.id) }}">
+        <input type="hidden" name="atual" value="{{ pedido.status }}">
+        <input type="hidden" name="novo" value="CANCELADO">
+        <button class="botao botao-perigo" type="submit">Sim, cancelar pedido</button>
+      </form>
+    </details>
+  {% endif %}
+</div>
+{% endblock %}

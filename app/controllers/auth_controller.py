@@ -55,6 +55,8 @@ def login():
         if usuario:
             auth.entrar(usuario)
             flash(f"Olá, {usuario['nome'].split()[0]}!", "sucesso")
+            if usuario["perfil"] == "ADMIN" and not request.values.get("next"):
+                return redirect(url_for("admin.pedidos"))
             return redirect(_proxima_pagina())
         # Mesma mensagem para e-mail inexistente ou senha errada:
         # não revelamos quais e-mails têm cadastro (critério da US02).

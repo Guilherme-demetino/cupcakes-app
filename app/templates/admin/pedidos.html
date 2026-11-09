@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block titulo %}Admin • Pedidos{% endblock %}
+{% block cabecalho %}Admin • Pedidos{% endblock %}
+
+{% block conteudo %}
+<div class="admin">
+  <div class="chips" role="list" aria-label="Filtrar por status">
+    <a role="listitem" class="chip {{ 'ativo' if not filtro }}" href="{{ url_for('admin.pedidos') }}">Todos</a>
+    {% for codigo, nome in nomes_status.items() %}
+      <a role="listitem" class="chip {{ 'ativo' if filtro == codigo }}" href="{{ url_for('admin.pedidos', status=codigo) }}">
+        {{ nome }} <span class="contador">{{ contagem.get(codigo, 0) }}</span></a>
+    {% endfor %}
+  </div>
+
+  {% if not pedidos %}
+    <div class="vazio"><div class="vazio-icone" aria-hidden="true">📋</div><p>Nenhum pedido {{ ('com status "' ~ nomes_status[filtro] ~ '"') if filtro }}.</p></div>
+  {% else %}
+    <ul class="lista-pedidos">
+      {% for p in pedidos %}
+        <li class="item item-admin">
+          <a class="item-info" href="{{ url_for('admin.pedido', pedido_id=p.id) }}">
+            <span class="item-nome">Nº {{ p.id }} • {{ p.cliente }}</span>
+            <span class="legenda">{{ p.criado_em | data_hora }} • {{ p.qtd_itens }} {{ 'item' if p.qtd_itens == 1 else 'itens' }} • <span class="sem-quebra">{{ p.valor_total | brl }}</span></span>
+            <span><span class="status status-{{ p.status }}">{{ nomes_status[p.status] }}</span></span>
+          </a>
+          {% set proximo = avanco.get(p.status) %}
+          {% if proximo %}
+            <form method="post" action="{{ url_for('admin.mudar_status', pedido_id=p.id) }}">
+              <input type="hidden" name="atual" value="{{ p.status }}">
+              <input type="hidden" name="novo" value="{{ proximo }}">
+              <input type="hidden" name="voltar" value="lista">
+              <input type="hidden" name="filtro" value="{{ filtro or '' }}">
+              <button class="chip ativo botao-acao" type="submit">{{ acoes[proximo] }}</button>
+            </form>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+</div>
+{% endblock %}

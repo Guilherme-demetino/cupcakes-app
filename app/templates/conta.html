@@ -13,7 +13,11 @@
     </dl>
   </div>
 
-  <a class="botao" href="{{ url_for('pedido.lista') }}">Meus pedidos</a>
+  {% if usuario.perfil == 'ADMIN' %}
+    <a class="botao" href="{{ url_for('admin.pedidos') }}">Área administrativa</a>
+  {% else %}
+    <a class="botao" href="{{ url_for('pedido.lista') }}">Meus pedidos</a>
+  {% endif %}
   <a class="botao botao-contorno" href="{{ url_for('carrinho.ver') }}">Ver meu carrinho</a>
 
   <form method="post" action="{{ url_for('auth.logout') }}">

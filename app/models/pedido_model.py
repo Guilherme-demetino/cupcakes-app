@@ -196,3 +196,72 @@ def cancelar_pelo_cliente(pedido_id, usuario_id):
     if cancelado is None:
         raise PedidoNaoPodeSerCancelado(pedido_id)
     db.commit()
+
+
+# =====================================================================
+# Área administrativa (US11) – Sprint 4
+# =====================================================================
+
+class TransicaoInvalida(Exception):
+    def __init__(self, atual, novo):
+        super().__init__(f"{atual} -> {novo}")
+        self.atual, self.novo = atual, novo
+
+
+# Rótulo do botão que leva a cada status (o que o funcionário está fazendo)
+ACOES = {"EM_PREPARO": "Iniciar preparo", "SAIU_PARA_ENTREGA": "Despachar",
+         "ENTREGUE": "Confirmar entrega", "CANCELADO": "Cancelar pedido"}
+# Próximo passo "normal" de cada status (botão rápido na lista de pedidos)
+AVANCO = {"RECEBIDO": "EM_PREPARO", "EM_PREPARO": "SAIU_PARA_ENTREGA", "SAIU_PARA_ENTREGA": "ENTREGUE"}
+
+
+def listar_todos(status=None):
+    """Todos os pedidos (com o nome do cliente), filtrando por status se informado."""
+    sql = """SELECT p.id, p.status, p.valor_total, p.criado_em, u.nome AS cliente,
+                    (SELECT sum(quantidade) FROM item_pedido WHERE pedido_id = p.id) AS qtd_itens
+             FROM pedido p JOIN usuario u ON u.id = p.usuario_id"""
+    params = []
+    if status:
+        sql += " WHERE p.status = %s"
+        params.append(status)
+    # Pedidos em andamento primeiro (na ordem do fluxo), depois os finalizados; mais antigos primeiro
+    sql += """ ORDER BY CASE p.status WHEN 'RECEBIDO' THEN 1 WHEN 'EM_PREPARO' THEN 2
+                                      WHEN 'SAIU_PARA_ENTREGA' THEN 3 ELSE 4 END,
+                        CASE WHEN p.status IN ('ENTREGUE', 'CANCELADO') THEN -extract(epoch FROM p.criado_em)
+                             ELSE extract(epoch FROM p.criado_em) END, p.id"""
+    return consultar(sql, params)
+
+
+def contar_por_status():
+    linhas = consultar("SELECT status, count(*) AS qtd FROM pedido GROUP BY status")
+    return {linha["status"]: linha["qtd"] for linha in linhas}
+
+
+def buscar_admin(pedido_id):
+    """Pedido completo de qualquer cliente, com nome e telefone para contato na entrega."""
+    dono = consultar_um("SELECT usuario_id FROM pedido WHERE id = %s", (pedido_id,))
+    if dono is None:
+        return None
+    pedido = buscar_do_usuario(pedido_id, dono["usuario_id"])
+    pedido["cliente"] = consultar_um("SELECT nome, email, telefone FROM usuario WHERE id = %s",
+                                     (dono["usuario_id"],))
+    pedido["proximos"] = [s for s in TRANSICOES[pedido["status"]] if pode_mudar_status(pedido["status"], s, True)]
+    return pedido
+
+
+def mudar_status_admin(pedido_id, atual, novo):
+    """Muda o status seguindo a RN07.
+
+    'atual' é o status que o funcionário estava vendo na tela. O UPDATE só acontece
+    se o pedido ainda estiver nesse status: se outra pessoa já o alterou, nada é
+    sobrescrito e é lançado TransicaoInvalida (MSG16)."""
+    if not pode_mudar_status(atual, novo, por_admin=True):
+        raise TransicaoInvalida(atual, novo)
+    db = get_db()
+    alterado = db.execute("UPDATE pedido SET status = %s WHERE id = %s AND status = %s RETURNING id",
+                          (novo, pedido_id, atual)).fetchone()
+    if alterado is None:
+        db.rollback()
+        real = consultar_um("SELECT status FROM pedido WHERE id = %s", (pedido_id,))
+        raise TransicaoInvalida(real["status"] if real else atual, novo)
+    db.commit()

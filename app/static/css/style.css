@@ -195,3 +195,37 @@ h3 { font-size: 16px; margin-bottom: 8px; }
 .linha-tempo li.cancelado::before { background: var(--erro); }
 .linha-tempo .legenda { display: block; font-weight: 400; }
 .sem-quebra { white-space: nowrap; }
+
+/* Área administrativa (Sprint 4) */
+.admin { max-width: 720px; margin: 0 auto; }
+.lista-admin { list-style: none; margin-top: 16px; }
+.lista-admin .item { scroll-margin-top: 80px; }
+.lista-admin .item.inativo img { filter: grayscale(1); opacity: .5; }
+.lista-admin .item.inativo .item-nome { color: var(--suave); }
+.interruptor { width: 52px; height: 30px; border-radius: 999px; border: none; background: #CFC3BE;
+               position: relative; cursor: pointer; flex: none; }
+.interruptor::after { content: ""; position: absolute; top: 3px; left: 3px; width: 24px; height: 24px;
+                      border-radius: 50%; background: #fff; transition: left .2s; box-shadow: 0 1px 2px rgba(0,0,0,.2); }
+.interruptor.ligado { background: var(--sucesso); }
+.interruptor.ligado::after { left: 25px; }
+.item-admin { align-items: center; }
+.item-admin .item-info { text-decoration: none; gap: 2px; }
+.botao-acao { min-height: 44px; border: none; cursor: pointer; font: inherit; font-size: 13px; font-weight: 700; }
+.contador { display: inline-block; margin-left: 4px; font-size: 12px; opacity: .8; }
+.duas-colunas-iguais { grid-template-columns: 1fr 1fr; }
+.campo textarea.invalido { border-color: var(--erro); border-width: 2px; }
+.campo input[type=file] { padding: 10px; }
+.foto-atual { width: 120px; height: 120px; object-fit: cover; border-radius: 10px; margin-bottom: 6px; }
+.ingredientes-escolha { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip-escolha { display: inline-flex; align-items: center; min-height: 40px; padding: 0 12px; border: 1px solid var(--linha);
+                border-radius: 999px; background: var(--cartao); cursor: pointer; font-size: 14px; }
+.chip-escolha input { position: absolute; opacity: 0; }
+.chip-escolha:has(input:checked) { background: var(--primaria); border-color: var(--primaria); color: #fff; }
+.chip-escolha:has(input:focus-visible) { outline: 3px solid var(--primaria); outline-offset: 2px; }
+.confirmar-cancelamento { margin-top: 16px; }
+.confirmar-cancelamento summary { list-style: none; }
+.confirmar-cancelamento summary::-webkit-details-marker { display: none; }
+.confirmar-cancelamento p { margin: 12px 0 0; text-align: center; color: var(--erro); }
+.botao-perigo { background: var(--erro); }
+.botao-perigo:hover { background: #A31515; }
+a[href^="tel:"] { color: var(--primaria); font-weight: 700; }

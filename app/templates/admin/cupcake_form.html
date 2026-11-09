@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% from "_campo.html" import campo %}
+{% block titulo %}Admin • {{ 'Editar' if existente else 'Novo' }} cupcake{% endblock %}
+{% block voltar %}<a class="voltar" href="{{ url_for('admin.cupcakes') }}" aria-label="Voltar à lista">←</a>{% endblock %}
+{% block cabecalho %}{{ 'Editar ' ~ existente.nome if existente else 'Novo cupcake' }}{% endblock %}
+
+{% block conteudo %}
+<div class="formulario">
+  {% if erros %}<div class="alerta alerta-erro" role="alert">Confira os campos destacados abaixo.</div>{% endif %}
+
+  <form method="post" enctype="multipart/form-data" novalidate
+        action="{{ url_for('admin.editar_cupcake', cupcake_id=existente.id) if existente else url_for('admin.novo_cupcake') }}">
+    {{ campo('nome', 'Nome', dados.nome or '', erro=erros.nome, attrs='maxlength="80" required') }}
+
+    <div class="campo">
+      <label for="categoria_id">Categoria</label>
+      <select id="categoria_id" name="categoria_id" required {% if erros.categoria_id %}class="invalido" aria-invalid="true"{% endif %}>
+        <option value="">Escolha…</option>
+        {% for cat in categorias %}<option value="{{ cat.id }}" {{ 'selected' if dados.categoria_id == cat.id }}>{{ cat.nome }}</option>{% endfor %}
+      </select>
+      {% if erros.categoria_id %}<p class="erro-campo">{{ erros.categoria_id }}</p>{% endif %}
+    </div>
+
+    <div class="campo">
+      <label for="descricao">Descrição</label>
+      <textarea id="descricao" name="descricao" rows="3" required
+                {% if erros.descricao %}class="invalido" aria-invalid="true" aria-describedby="erro-descricao"{% endif %}>{{ dados.descricao or '' }}</textarea>
+      {% if erros.descricao %}<p class="erro-campo" id="erro-descricao">{{ erros.descricao }}</p>{% endif %}
+    </div>
+
+    <div class="duas-colunas duas-colunas-iguais">
+      {{ campo('preco', 'Preço (R$)', dados.preco or '', erro=erros.preco, attrs='inputmode="decimal" placeholder="12,90" required') }}
+      {{ campo('peso_gramas', 'Peso (g)', dados.peso_gramas or '', erro=erros.peso_gramas, attrs='inputmode="numeric" placeholder="90" required') }}
+    </div>
+
+    <fieldset class="pagamento">
+      <legend class="titulo-secao">Tamanho</legend>
+      <div class="opcoes">
+        {% for codigo, nome in tamanhos.items() %}
+          <label class="opcao"><input type="radio" name="tamanho" value="{{ codigo }}" {{ 'checked' if dados.tamanho == codigo }}><span>{{ nome }}</span></label>
+        {% endfor %}
+      </div>
+      {% if erros.tamanho %}<p class="erro-campo">{{ erros.tamanho }}</p>{% endif %}
+    </fieldset>
+
+    <div class="campo">
+      <label for="foto">Foto (WebP, JPG ou PNG, até 200 KB)</label>
+      {% if dados.foto_url %}
+        <img class="foto-atual" src="{{ dados.foto_url }}" alt="Foto atual" width="120" height="120" data-previa>
+        <p class="dica">Envie um arquivo só se quiser trocar a foto.</p>
+      {% else %}
+        <img class="foto-atual" alt="" width="120" height="120" data-previa hidden>
+      {% endif %}
+      <input id="foto" name="foto" type="file" accept="image/webp,image/jpeg,image/png" data-foto
+             {% if erros.foto %}class="invalido" aria-invalid="true" aria-describedby="erro-foto"{% endif %}>
+      {% if erros.foto %}<p class="erro-campo" id="erro-foto">{{ erros.foto }}</p>{% endif %}
+    </div>
+
+    <fieldset class="pagamento">
+      <legend class="titulo-secao">Ingredientes <span class="legenda">(⚠ = alergênico)</span></legend>
+      <div class="ingredientes-escolha">
+        {% for i in ingredientes %}
+          <label class="chip-escolha"><input type="checkbox" name="ingredientes" value="{{ i.id }}"
+                 {{ 'checked' if i.id in dados.ingrediente_ids }}><span>{{ '⚠ ' if i.alergenico }}{{ i.nome }}</span></label>
+        {% endfor %}
+      </div>
+      {% if erros.ingredientes %}<p class="erro-campo">{{ erros.ingredientes }}</p>{% endif %}
+    </fieldset>
+
+    <button class="botao" type="submit">Salvar</button>
+  </form>
+</div>
+{% endblock %}

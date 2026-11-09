@@ -87,6 +87,18 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  // Admin (Sprint 4): pré-visualização da foto escolhida, antes de enviar
+  document.querySelectorAll("[data-foto]").forEach((campo) => {
+    const previa = campo.parentElement.querySelector("[data-previa]");
+    campo.addEventListener("change", () => {
+      const arquivo = campo.files[0];
+      if (!arquivo || !previa) return;
+      if (arquivo.size > 200 * 1024) avisar("A foto deve ter no máximo 200 KB. Dica: salve em formato WebP.");
+      previa.src = URL.createObjectURL(arquivo);
+      previa.hidden = false;
+    });
+  });
+
   // Toasts somem sozinhos depois de 4 segundos
   const esconder = (toast) => {
     toast.classList.add("sumindo");

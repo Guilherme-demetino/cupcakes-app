@@ -25,8 +25,10 @@ def banco():
 
 
 @pytest.fixture
-def app(banco):
-    return create_app({"TESTING": True, "DATABASE_URL": banco, "SECRET_KEY": "chave-de-teste"})
+def app(banco, tmp_path):
+    # As fotos enviadas nos testes vão para uma pasta temporária, e não para o projeto.
+    return create_app({"TESTING": True, "DATABASE_URL": banco, "SECRET_KEY": "chave-de-teste",
+                       "UPLOAD_FOLDER": str(tmp_path / "uploads")})
 
 
 @pytest.fixture

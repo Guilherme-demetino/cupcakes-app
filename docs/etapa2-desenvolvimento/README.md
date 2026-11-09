@@ -28,12 +28,15 @@ app/
 │   ├── catalogo_controller.py
 │   ├── carrinho_controller.py
 │   ├── auth_controller.py
-│   └── pedido_controller.py
+│   ├── pedido_controller.py
+│   └── admin_controller.py   ← área administrativa (US10, US11)
 ├── auth.py                  ← quem está logado; decorators @login_obrigatorio e @admin_obrigatorio
+├── uploads.py               ← validação e gravação das fotos enviadas pelo administrador
 ├── templates/               ← V: telas em HTML (Jinja2)
 │   ├── base.html  catalogo.html  detalhe.html  carrinho.html  erro.html
 │   ├── login.html  cadastro.html  conta.html  _campo.html
 │   ├── checkout.html  confirmacao.html  pedidos.html  pedido.html  cancelar.html
+│   └── admin/  cupcakes.html  cupcake_form.html  pedidos.html  pedido.html
 └── static/                  ← CSS, JavaScript e imagens
 tests/                       ← testes automatizados (Pytest)
 ```
@@ -180,9 +183,51 @@ Depois de desfazer as mudanças, todos voltaram a passar.
 
 **Observação:** o preenchimento pelo CEP usa o serviço gratuito ViaCEP direto no navegador. Se ele estiver fora do ar, nada quebra e o cliente digita o endereço normalmente. Esse recurso precisa de internet, por isso não pôde ser testado no ambiente usado para os testes automáticos. Vale conferir manualmente.
 
+### Sprint 4 – Área administrativa (US10, US11) ✅
+
+Entre com `admin@cupcakeapp.com.br` / `Admin@2026`. O administrador cai direto na lista de pedidos e tem um menu próprio: Pedidos, Cupcakes, Ver loja e Conta.
+
+| História | O que foi feito | Arquivos principais |
+|---|---|---|
+| **US10** Manter cupcakes | A lista mostra todos os cupcakes, ativos e inativos, com quantas vezes cada um foi vendido. Um interruptor tira ou coloca o cupcake no cardápio (RN04). O formulário serve para criar e para editar: nome, categoria, descrição, preço (aceita "16,90"), peso, tamanho, foto com **pré-visualização** e ingredientes, com os alergênicos marcados. Na edição, se nenhuma foto for enviada, a atual é mantida. **Não há botão de excluir**: cupcakes vendidos ficam no histórico (RN11). | `cupcake_model.validar_cupcake/salvar/alternar_ativo`, `uploads.py`, `admin/cupcakes.html`, `admin/cupcake_form.html` |
+| **US11** Gerenciar pedidos | A lista tem filtro por status e mostra a contagem de cada um. Os pedidos em andamento aparecem primeiro, e cada um tem um **botão rápido** para o próximo passo ("Iniciar preparo", "Despachar", "Confirmar entrega"). O detalhe mostra o cliente com o **telefone clicável**, o endereço, a forma de pagamento, a observação em destaque, os itens a preparar e o histórico. O cancelamento pede confirmação e só aparece quando a RN07 permite. | `pedido_model.listar_todos/buscar_admin/mudar_status_admin`, `admin/pedidos.html`, `admin/pedido.html` |
+
+![Telas da área administrativa](img/sprint4-admin.png)
+*Lista de pedidos, detalhe para a cozinha e a entrega, formulário barrando um cupcake incompleto (MSG08/MSG09), lista de cupcakes depois de salvar (MSG22) e o novo cupcake já aparecendo na loja.*
+
+**Regras e proteções desta sprint:**
+
+| Regra | Como foi garantida | Teste que comprova |
+|---|---|---|
+| RNF06 Só o administrador acessa | `@admin_obrigatorio` em todas as rotas `/admin`: visitante vai para o login, cliente recebe MSG17 (403) | `test_cliente_recebe_msg17` (6 rotas), `test_cliente_nao_consegue_mudar_status_nem_cadastrar` |
+| RN01 Foto e descrição | `validar_cupcake` (MSG08) + `CHECK` no banco | `test_cadastrar_sem_foto_mostra_msg08_e_nao_grava` |
+| RN02 Preço > 0 | MSG09; aceita vírgula e separador de milhar | `test_preco_maior_que_zero_msg09` (9 casos) |
+| RNF01 Foto ≤ 200 KB | `uploads.py` recusa arquivos maiores, e o Flask corta envios acima de 2 MB | `test_foto_acima_de_200kb_e_recusada` |
+| Upload seguro | O tipo é conferido pelo **conteúdo** do arquivo, não pelo nome, e o nome é gerado pelo sistema (ninguém sobrescreve arquivos) | `test_arquivo_que_nao_e_imagem_e_recusado` (um script PHP renomeado para .webp é recusado) |
+| RN07 Fluxo de status | `pode_mudar_status()` no código + gatilho no banco (duas camadas) | `test_nao_pula_etapas_msg16`, `test_gatilho_do_banco_tambem_protege`, `test_nao_cancela_pedido_que_saiu_para_entrega` |
+| Dois funcionários ao mesmo tempo | O `UPDATE` só acontece se o status ainda for o que estava na tela; se outra pessoa já mudou, aparece um aviso e nada é sobrescrito | `test_dois_funcionarios_ao_mesmo_tempo` |
+| RN05 / RN11 | Editar o preço não altera pedidos antigos; desativar não apaga o histórico | `test_editar_sem_enviar_foto_mantem_a_atual`, `test_tirar_e_voltar_ao_cardapio` |
+
+**Os testes pegam as falhas?** Introduzi seis falhas de propósito e rodei os testes de novo:
+
+| Falha introduzida | Testes que falharam |
+|---|---|
+| Cliente com acesso à área do administrador | 7 |
+| Aceitar qualquer arquivo como foto | 1 |
+| Sem o limite de 200 KB | 1 |
+| Cupcake sem foto (RN01) | 2 |
+| Pular etapas do pedido (RN07) | 2 |
+| Sobrescrever a mudança feita por outro funcionário | 4 |
+
+Depois de desfazer as mudanças, os 203 testes voltaram a passar.
+
+**Teste de ponta a ponta:** `test_pedido_do_cliente_aparece_para_o_admin` junta as quatro sprints. O cliente entra, compra 4 Cacau Zero e finaliza com observação. Depois o administrador entra e vê o pedido com os itens, a observação e o total certo (R$ 63,60).
+
+**Melhorias futuras (fora do escopo):** cadastrar novos ingredientes e categorias pela tela (hoje usa os do banco), apagar fotos antigas que não são mais usadas e paginar a lista de pedidos quando ela ficar grande.
+
 ## Testes automatizados (total acumulado)
 
-**148 testes, todos passando.** Para rodar: `pytest`.
+**203 testes, todos passando.** Para rodar: `pytest`.
 
 | Arquivo | Tipo | Qtd. | Sprint |
 |---|---|---|---|
@@ -193,6 +238,6 @@ Depois de desfazer as mudanças, todos voltaram a passar.
 | `tests/test_rotas_auth.py` | Integração (simula o navegador) | 21 | 2 |
 | `tests/test_pedido_model.py` | Unitário + integração | 34 | 3 |
 | `tests/test_rotas_pedido.py` | Integração (simula o navegador) | 18 | 3 |
+| `tests/test_admin.py` | Unitário + integração | 55 | 4 |
 
-### Sprint 4 – Área administrativa (US10, US11) ⏳
 ### Manual de uso ⏳

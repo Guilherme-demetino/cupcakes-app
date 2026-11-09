@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block titulo %}Admin • Cupcakes{% endblock %}
+{% block cabecalho %}Admin • Cupcakes{% endblock %}
+
+{% block conteudo %}
+<div class="admin">
+  <a class="botao" href="{{ url_for('admin.novo_cupcake') }}">+ Novo cupcake</a>
+
+  <ul class="lista-admin">
+    {% for c in cupcakes %}
+      <li id="cupcake-{{ c.id }}" class="item {{ 'inativo' if not c.ativo }}">
+        <img src="{{ c.foto_url }}" alt="" width="56" height="56">
+        <div class="item-info">
+          <a class="item-nome" href="{{ url_for('admin.editar_cupcake', cupcake_id=c.id) }}">{{ c.nome }}</a>
+          <span class="legenda">{{ c.preco | brl }} • {{ c.categoria }} • vendido em {{ c.vendas }} {{ 'pedido' if c.vendas == 1 else 'pedidos' }}</span>
+          <span class="legenda">{{ 'No cardápio' if c.ativo else 'Fora do cardápio' }}</span>
+        </div>
+        <form method="post" action="{{ url_for('admin.alternar_ativo', cupcake_id=c.id) }}">
+          <button class="interruptor {{ 'ligado' if c.ativo }}" type="submit" role="switch"
+                  aria-checked="{{ 'true' if c.ativo else 'false' }}"
+                  aria-label="{{ 'Tirar' if c.ativo else 'Colocar' }} {{ c.nome }} {{ 'do' if c.ativo else 'no' }} cardápio"></button>
+        </form>
+      </li>
+    {% endfor %}
+  </ul>
+  <p class="legenda">Cupcakes não são excluídos, só tirados do cardápio. Assim, os pedidos antigos continuam mostrando o que foi vendido (RN11).</p>
+</div>
+{% endblock %}
