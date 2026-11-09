@@ -1,0 +1,42 @@
+sequenceDiagram
+    autonumber
+    actor Cliente
+    participant View as View<br/>(checkout.html)
+    participant Ctrl as PedidoController
+    participant Car as Carrinho<br/>(sessão)
+    participant Cup as CupcakeModel
+    participant Ped as PedidoModel
+    participant DB as PostgreSQL
+
+    Cliente->>View: Preenche endereço e pagamento
+    View->>Ctrl: POST /pedidos
+    Ctrl->>Ctrl: verifica sessão (logado?)
+    alt não logado
+        Ctrl-->>View: redireciona /login?next=/checkout
+    else logado
+        Ctrl->>Ctrl: valida endereço e forma de pagamento
+        alt dados inválidos
+            Ctrl-->>View: 422 + mensagens MSG06/MSG07
+        else dados válidos
+            Ctrl->>Car: obter itens
+            Car-->>Ctrl: itens [cupcakeId, qtd]
+            Ctrl->>Cup: buscarAtivos(ids)
+            Cup->>DB: SELECT ... WHERE id IN (...) AND ativo
+            DB-->>Cup: cupcakes
+            Cup-->>Ctrl: cupcakes ativos
+            alt algum cupcake inativo
+                Ctrl->>Car: remover(itens inativos)
+                Ctrl-->>View: redireciona /carrinho + MSG15
+            else todos ativos
+                Ctrl->>Ped: criar(usuario, endereco, itens, preços)
+                Ped->>DB: BEGIN
+                Ped->>DB: INSERT pedido / item_pedido / historico_status
+                Ped->>DB: COMMIT
+                DB-->>Ped: id do pedido
+                Ped-->>Ctrl: pedido criado
+                Ctrl->>Car: esvaziar()
+                Ctrl-->>View: redireciona /pedidos/{id}/confirmacao
+                View-->>Cliente: "Pedido nº {id} recebido!" (MSG21)
+            end
+        end
+    end

@@ -1,0 +1,79 @@
+erDiagram
+    usuario {
+        serial id PK
+        varchar nome
+        varchar email UK
+        varchar senha_hash
+        varchar telefone
+        varchar perfil
+        timestamp criado_em
+    }
+    endereco {
+        serial id PK
+        int usuario_id FK
+        char cep
+        varchar logradouro
+        varchar numero
+        varchar complemento
+        varchar bairro
+        varchar cidade
+        char uf
+    }
+    categoria {
+        serial id PK
+        varchar nome UK
+    }
+    cupcake {
+        serial id PK
+        int categoria_id FK
+        varchar nome UK
+        text descricao
+        numeric preco
+        varchar tamanho
+        smallint peso_gramas
+        varchar foto_url
+        boolean ativo
+        timestamp criado_em
+        timestamp atualizado_em
+    }
+    ingrediente {
+        serial id PK
+        varchar nome UK
+        boolean alergenico
+    }
+    cupcake_ingrediente {
+        int cupcake_id PK, FK
+        int ingrediente_id PK, FK
+    }
+    pedido {
+        serial id PK
+        int usuario_id FK
+        int endereco_id FK
+        varchar status
+        varchar forma_pagamento
+        numeric taxa_entrega
+        numeric valor_total
+        varchar observacao
+        timestamp criado_em
+    }
+    item_pedido {
+        int pedido_id PK, FK
+        int cupcake_id PK, FK
+        smallint quantidade
+        numeric preco_unitario
+    }
+    historico_status {
+        serial id PK
+        int pedido_id FK
+        varchar status
+        timestamp alterado_em
+    }
+    usuario ||--o{ endereco : ""
+    usuario ||--o{ pedido : ""
+    endereco ||--o{ pedido : ""
+    categoria ||--o{ cupcake : ""
+    cupcake ||--o{ cupcake_ingrediente : ""
+    ingrediente ||--o{ cupcake_ingrediente : ""
+    pedido ||--|{ item_pedido : ""
+    cupcake ||--o{ item_pedido : ""
+    pedido ||--|{ historico_status : ""

@@ -1,0 +1,8 @@
+erDiagram
+    USUARIO     ||--o{ ENDERECO    : "possui"
+    USUARIO     ||--o{ PEDIDO      : "realiza"
+    ENDERECO    ||--o{ PEDIDO      : "recebe"
+    CATEGORIA   ||--o{ CUPCAKE     : "agrupa"
+    CUPCAKE     }o--|{ INGREDIENTE : "contém"
+    PEDIDO      }o--|{ CUPCAKE     : "inclui (quantidade, preço unitário)"
+    PEDIDO      ||--|{ HISTORICO_STATUS : "registra"

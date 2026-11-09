@@ -1,0 +1,80 @@
+classDiagram
+    direction LR
+    class usuario { <<tabela>>
+        PK id : serial
+        nome : varchar(100)
+        email : varchar(150) UK
+        senha_hash : varchar(255)
+        telefone : varchar(20)
+        perfil : varchar(10)
+        criado_em : timestamp
+    }
+    class endereco { <<tabela>>
+        PK id : serial
+        FK usuario_id : int
+        cep : char(8)
+        logradouro : varchar(150)
+        numero : varchar(10)
+        complemento : varchar(60)
+        bairro : varchar(80)
+        cidade : varchar(80)
+        uf : char(2)
+    }
+    class categoria { <<tabela>>
+        PK id : serial
+        nome : varchar(50) UK
+    }
+    class cupcake { <<tabela>>
+        PK id : serial
+        FK categoria_id : int
+        nome : varchar(80) UK
+        descricao : text
+        preco : numeric(8,2)
+        tamanho : varchar(12)
+        peso_gramas : smallint
+        foto_url : varchar(255)
+        ativo : boolean
+        criado_em : timestamp
+        atualizado_em : timestamp
+    }
+    class ingrediente { <<tabela>>
+        PK id : serial
+        nome : varchar(60) UK
+        alergenico : boolean
+    }
+    class cupcake_ingrediente { <<tabela>>
+        PK,FK cupcake_id : int
+        PK,FK ingrediente_id : int
+    }
+    class pedido { <<tabela>>
+        PK id : serial
+        FK usuario_id : int
+        FK endereco_id : int
+        status : varchar(20)
+        forma_pagamento : varchar(10)
+        taxa_entrega : numeric(8,2)
+        valor_total : numeric(10,2)
+        observacao : varchar(255)
+        criado_em : timestamp
+    }
+    class item_pedido { <<tabela>>
+        PK,FK pedido_id : int
+        PK,FK cupcake_id : int
+        quantidade : smallint
+        preco_unitario : numeric(8,2)
+    }
+    class historico_status { <<tabela>>
+        PK id : serial
+        FK pedido_id : int
+        status : varchar(20)
+        alterado_em : timestamp
+    }
+    usuario "1" -- "0..*" endereco
+    usuario "1" -- "0..*" pedido
+    endereco "1" -- "0..*" pedido
+    categoria "1" -- "0..*" cupcake
+    cupcake "1" -- "0..*" cupcake_ingrediente
+    ingrediente "1" -- "0..*" cupcake_ingrediente
+    pedido "1" -- "1..*" item_pedido
+    cupcake "1" -- "0..*" item_pedido
+    pedido "1" -- "1..*" historico_status

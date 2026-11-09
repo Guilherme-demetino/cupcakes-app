@@ -1,0 +1,133 @@
+classDiagram
+    direction LR
+
+    class Usuario {
+        -int id
+        -String nome
+        -String email
+        -String senhaHash
+        -String telefone
+        -Perfil perfil
+        -DateTime criadoEm
+        +autenticar(senha) bool
+        +isAdmin() bool
+    }
+
+    class Endereco {
+        -int id
+        -String cep
+        -String logradouro
+        -String numero
+        -String complemento
+        -String bairro
+        -String cidade
+        -String uf
+        +validarCep() bool
+    }
+
+    class Categoria {
+        -int id
+        -String nome
+    }
+
+    class Cupcake {
+        -int id
+        -String nome
+        -String descricao
+        -Decimal preco
+        -Tamanho tamanho
+        -int pesoGramas
+        -String fotoUrl
+        -bool ativo
+        +validar() List~String~
+        +temAlergenicos() bool
+        +desativar() void
+    }
+
+    class Ingrediente {
+        -int id
+        -String nome
+        -bool alergenico
+    }
+
+    class Carrinho {
+        -List~ItemCarrinho~ itens
+        +adicionar(cupcake, qtd) void
+        +alterarQuantidade(cupcakeId, qtd) void
+        +remover(cupcakeId) void
+        +subtotal() Decimal
+        +total() Decimal
+        +esvaziar() void
+    }
+
+    class ItemCarrinho {
+        -Cupcake cupcake
+        -int quantidade
+        +subtotal() Decimal
+    }
+
+    class Pedido {
+        -int id
+        -StatusPedido status
+        -FormaPagamento formaPagamento
+        -Decimal taxaEntrega
+        -Decimal valorTotal
+        -String observacao
+        -DateTime criadoEm
+        +calcularTotal() Decimal
+        +alterarStatus(novo, porAdmin) void
+        +podeSerCancelado(porAdmin) bool
+    }
+
+    class ItemPedido {
+        -int quantidade
+        -Decimal precoUnitario
+        +subtotal() Decimal
+    }
+
+    class HistoricoStatus {
+        -int id
+        -StatusPedido status
+        -DateTime alteradoEm
+    }
+
+    class Perfil {
+        <<enumeration>>
+        CLIENTE
+        ADMIN
+    }
+    class Tamanho {
+        <<enumeration>>
+        MINI
+        TRADICIONAL
+        GIGANTE
+    }
+    class StatusPedido {
+        <<enumeration>>
+        RECEBIDO
+        EM_PREPARO
+        SAIU_PARA_ENTREGA
+        ENTREGUE
+        CANCELADO
+    }
+    class FormaPagamento {
+        <<enumeration>>
+        PIX
+        CARTAO
+        DINHEIRO
+    }
+
+    Usuario "1" --> "0..*" Endereco : possui
+    Usuario "1" --> "0..*" Pedido : realiza
+    Categoria "1" --> "0..*" Cupcake : agrupa
+    Cupcake "0..*" --> "1..*" Ingrediente : contém
+    Carrinho "1" *-- "0..*" ItemCarrinho
+    ItemCarrinho "0..*" --> "1" Cupcake
+    Pedido "1" *-- "1..*" ItemPedido
+    ItemPedido "0..*" --> "1" Cupcake
+    Pedido "0..*" --> "1" Endereco : entregue em
+    Pedido "1" *-- "1..*" HistoricoStatus
+    Usuario ..> Perfil
+    Cupcake ..> Tamanho
+    Pedido ..> StatusPedido
+    Pedido ..> FormaPagamento

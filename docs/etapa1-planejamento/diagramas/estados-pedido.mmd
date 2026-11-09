@@ -1,0 +1,9 @@
+stateDiagram-v2
+    [*] --> RECEBIDO : cliente confirma pedido
+    RECEBIDO --> EM_PREPARO : admin inicia produção
+    RECEBIDO --> CANCELADO : cliente ou admin cancela
+    EM_PREPARO --> SAIU_PARA_ENTREGA : admin despacha
+    EM_PREPARO --> CANCELADO : admin cancela
+    SAIU_PARA_ENTREGA --> ENTREGUE : admin confirma entrega
+    ENTREGUE --> [*]
+    CANCELADO --> [*]

@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CupcakeApp – Protótipo navegável</title>
+<style>
+  :root{--pri:#C2185B;--pri-d:#9C1349;--sec:#4E342E;--bg:#FFF8F3;--card:#fff;--muted:#7a6a64;--line:#EADFD8;
+        --ok:#2E7D32;--warn:#B26A00;--err:#C62828;--r:12px}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#ece4df;color:var(--sec);
+       min-height:100vh;display:flex;gap:32px;justify-content:center;align-items:flex-start;padding:24px;flex-wrap:wrap}
+  .side{max-width:280px;font-size:14px;line-height:1.5}
+  .side h1{font-size:20px;margin-bottom:8px}
+  .side p{margin-bottom:10px;color:var(--muted)}
+  .side button{display:block;width:100%;text-align:left;margin:4px 0;padding:8px 10px;border:1px solid var(--line);
+       background:#fff;border-radius:8px;cursor:pointer;font:inherit;color:var(--sec)}
+  .side button:hover{border-color:var(--pri)}
+  .phone{width:375px;height:760px;background:var(--bg);border-radius:36px;border:10px solid #222;position:relative;
+         overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.25);display:flex;flex-direction:column}
+  header.top{padding:14px 16px 10px;display:flex;align-items:center;gap:10px;background:var(--bg)}
+  header.top h2{font-size:20px;flex:1}
+  .back{border:none;background:none;font-size:22px;cursor:pointer;color:var(--sec);width:44px;height:44px;margin:-10px 0 -10px -10px}
+  main{flex:1;overflow-y:auto;padding:0 16px 16px}
+  nav.bottom{display:flex;border-top:1px solid var(--line);background:#fff}
+  nav.bottom button{flex:1;border:none;background:none;padding:10px 0 12px;font-size:12px;cursor:pointer;color:var(--muted);position:relative}
+  nav.bottom button.on{color:var(--pri);font-weight:600}
+  nav.bottom .ic{display:block;font-size:20px}
+  .badge{position:absolute;top:4px;left:55%;background:var(--pri);color:#fff;border-radius:999px;font-size:11px;padding:1px 6px}
+  .search{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:999px;font:inherit;background:#fff;margin-bottom:10px}
+  .chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:10px}
+  .chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 14px;white-space:nowrap;cursor:pointer;font:inherit;font-size:14px;color:var(--sec)}
+  .chip.on{background:var(--pri);color:#fff;border-color:var(--pri)}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .card{background:var(--card);border-radius:var(--r);overflow:hidden;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+  .card .info{padding:8px 10px 12px}
+  .card .nm{font-size:14px;font-weight:600;line-height:1.3}
+  .price{color:var(--pri);font-weight:700}
+  .pic{display:flex;align-items:center;justify-content:center}
+  .tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:999px;background:#E8F5E9;color:var(--ok);margin-top:4px}
+  .btn{display:block;width:100%;border:none;border-radius:999px;background:var(--pri);color:#fff;font:inherit;font-weight:600;
+       padding:14px;cursor:pointer;min-height:48px}
+  .btn:hover{background:var(--pri-d)}
+  .btn.ghost{background:#fff;color:var(--pri);border:1px solid var(--pri)}
+  .qty{display:flex;align-items:center;gap:6px}
+  .qty button{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:#fff;font-size:18px;cursor:pointer;color:var(--sec)}
+  .qty span{min-width:24px;text-align:center;font-weight:600}
+  .alert{background:#FFF3E0;color:var(--warn);border-radius:10px;padding:10px 12px;font-size:14px;margin:10px 0}
+  .ing{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+  .ing span{font-size:13px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:4px 10px}
+  .ing span.al{border-color:var(--warn);color:var(--warn);font-weight:600}
+  .row{display:flex;align-items:center;gap:12px;background:#fff;border-radius:var(--r);padding:10px;margin-bottom:10px}
+  .row .grow{flex:1}
+  .sum div{display:flex;justify-content:space-between;padding:4px 0}
+  .sum .tot{font-weight:700;font-size:18px;border-top:1px solid var(--line);margin-top:6px;padding-top:10px}
+  label{display:block;font-size:14px;font-weight:600;margin:12px 0 4px}
+  input,select,textarea{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;font:inherit;background:#fff;color:var(--sec)}
+  .invalid{border-color:var(--err)}
+  .ferr{color:var(--err);font-size:13px;margin-top:4px}
+  .radio{display:flex;gap:8px}
+  .radio label{flex:1;margin:0;border:1px solid var(--line);border-radius:10px;padding:10px;text-align:center;font-weight:500;cursor:pointer;background:#fff}
+  .radio input{display:none}
+  .radio input:checked+span{color:var(--pri);font-weight:700}
+  .st{font-size:12px;padding:3px 10px;border-radius:999px;font-weight:600}
+  .st.RECEBIDO{background:#E3F2FD;color:#1565C0}.st.EM_PREPARO{background:#FFF3E0;color:var(--warn)}
+  .st.ENTREGUE{background:#E8F5E9;color:var(--ok)}.st.CANCELADO{background:#FFEBEE;color:var(--err)}
+  .empty{text-align:center;padding:60px 20px;color:var(--muted)}
+  .empty .big{font-size:48px;margin-bottom:10px}
+  .toast{position:absolute;left:16px;right:16px;top:64px;background:var(--sec);color:#fff;border-radius:10px;padding:12px 14px;
+         font-size:14px;opacity:0;transform:translateY(-10px);transition:.25s;pointer-events:none}
+  .toast.show{opacity:1;transform:none;pointer-events:auto}
+  .modal{position:absolute;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;padding:24px}
+  .modal.show{display:flex}
+  .modal .box{background:#fff;border-radius:16px;padding:20px}
+  .modal .box p{margin:8px 0 16px}
+  .tl{border-left:2px solid var(--line);margin:10px 0 10px 8px;padding-left:16px}
+  .tl div{position:relative;padding:6px 0;font-size:14px}
+  .tl div::before{content:"";position:absolute;left:-23px;top:10px;width:12px;height:12px;border-radius:50%;background:var(--line)}
+  .tl div.done::before{background:var(--ok)}
+  .switch{width:44px;height:26px;border-radius:999px;background:var(--line);position:relative;cursor:pointer;border:none}
+  .switch::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:.2s}
+  .switch.on{background:var(--ok)}.switch.on::after{left:21px}
+  .note{font-size:12px;color:var(--muted);margin-top:4px}
+</style>
+</head>
+<body>
+
+<aside class="side">
+  <h1>🧁 CupcakeApp – Protótipo</h1>
+  <p>Protótipo navegável da Etapa 1 (PI II). Os dados são fictícios e nada é salvo de verdade.</p>
+  <p><b>Ir direto para a tela:</b></p>
+  <button onclick="go('catalogo')">T1 Catálogo</button>
+  <button onclick="go('detalhe',1)">T2 Detalhes</button>
+  <button onclick="go('carrinho')">T3 Carrinho</button>
+  <button onclick="go('login')">T5 Login</button>
+  <button onclick="go('cadastro')">T7 Cadastro</button>
+  <button onclick="go('checkout')">T6 Checkout</button>
+  <button onclick="go('confirmacao')">T8 Confirmação</button>
+  <button onclick="go('pedidos')">T9 Meus pedidos</button>
+  <button onclick="go('pedido',1043)">T10 Detalhe do pedido</button>
+  <button onclick="go('adminLista')">A1 Admin – Cupcakes</button>
+  <button onclick="go('adminForm')">A2 Admin – Formulário</button>
+  <button onclick="go('adminPedidos')">A3 Admin – Pedidos</button>
+  <p style="margin-top:12px"><b>Para testar erros:</b> tente entrar com uma senha curta, digite um CEP com menos de 8 números no checkout ou salve um cupcake sem foto na área admin.</p>
+</aside>
+
+<div class="phone" id="phone">
+  <header class="top" id="top"></header>
+  <main id="main"></main>
+  <nav class="bottom" id="nav"></nav>
+  <div class="toast" id="toast"></div>
+  <div class="modal" id="modal"><div class="box" id="modalBox"></div></div>
+</div>
+
+<script>
+const TAXA = 8;
+const CATS = ['Todos','Clássicos','Recheados','Veganos','Zero açúcar'];
+const CUPS = [
+ {id:1,nome:'Red Velvet',cat:'Clássicos',preco:12.9,tam:'Tradicional',peso:90,cor:'#B71C1C',cob:'#FFFFFF',ativo:true,
+  desc:'Massa aveludada de cacau com toque de baunilha e cobertura de cream cheese.',ing:[['Farinha de trigo',1],['Cacau',0],['Ovos',1],['Leite',1],['Cream cheese',1],['Açúcar',0]]},
+ {id:2,nome:'Brigadeiro Belga',cat:'Recheados',preco:14.5,tam:'Tradicional',peso:100,cor:'#4E342E',cob:'#6D4C41',ativo:true,
+  desc:'Massa de chocolate recheada com brigadeiro de chocolate belga 54%.',ing:[['Farinha de trigo',1],['Chocolate belga',0],['Leite condensado',1],['Manteiga',1],['Ovos',1]]},
+ {id:3,nome:'Limão Siciliano',cat:'Clássicos',preco:11.9,tam:'Tradicional',peso:85,cor:'#F9E79F',cob:'#FFFDE7',ativo:true,
+  desc:'Massa leve com raspas de limão siciliano e merengue maçaricado.',ing:[['Farinha de trigo',1],['Limão siciliano',0],['Ovos',1],['Açúcar',0],['Manteiga',1]]},
+ {id:4,nome:'Cenoura Vegano',cat:'Veganos',preco:13.5,tam:'Tradicional',peso:90,cor:'#EF6C00',cob:'#5D4037',ativo:true,vegano:true,
+  desc:'Massa de cenoura sem ingredientes de origem animal, com cobertura de chocolate 70%.',ing:[['Farinha de trigo',1],['Cenoura',0],['Óleo de coco',0],['Chocolate 70%',0]]},
+ {id:5,nome:'Ninho com Morango',cat:'Recheados',preco:15.9,tam:'Gigante',peso:140,cor:'#FFF3E0',cob:'#F48FB1',ativo:true,
+  desc:'Massa branca recheada com creme de leite Ninho e pedaços de morango fresco.',ing:[['Farinha de trigo',1],['Leite em pó',1],['Morango',0],['Creme de leite',1],['Ovos',1]]},
+ {id:6,nome:'Cacau Zero',cat:'Zero açúcar',preco:13.9,tam:'Mini',peso:50,cor:'#5D4037',cob:'#8D6E63',ativo:true,zero:true,
+  desc:'Mini cupcake de cacau adoçado com xilitol, sem adição de açúcar.',ing:[['Farinha de amêndoas',1],['Cacau',0],['Xilitol',0],['Ovos',1]]},
+];
+const S = {tela:'catalogo',arg:null,cat:'Todos',busca:'',cart:[],logado:false,admin:false,qtd:1,proxima:null,
+  pedidos:[{id:1043,data:'02/11/2026',total:47.2,status:'ENTREGUE'},{id:1051,data:'09/11/2026',total:37.8,status:'RECEBIDO'}]};
+const brl = v => 'R$ ' + v.toFixed(2).replace('.',',');
+const cup = id => CUPS.find(c=>c.id==id);
+const $ = id => document.getElementById(id);
+
+function pic(c,h){ // ilustração genérica de cupcake (placeholder da foto real)
+  return `<div class="pic" style="height:${h}px;background:${c.cor}22" role="img" aria-label="Foto do cupcake ${c.nome}">
+  <svg viewBox="0 0 100 100" height="${h*0.75}"><path d="M25 55 L32 92 H68 L75 55 Z" fill="${c.cor}"/>
+  <path d="M25 55 L32 92 M38 55 L41 92 M50 55 V92 M62 55 L59 92 M75 55 L68 92" stroke="#0002" stroke-width="2"/>
+  <path d="M18 56 Q16 40 32 38 Q34 22 50 22 Q66 22 68 38 Q84 40 82 56 Z" fill="${c.cob}" stroke="#0001"/>
+  <circle cx="50" cy="18" r="6" fill="#C2185B"/></svg></div>`;
+}
+function toast(m){const t=$('toast');t.innerHTML=m;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('show'),3500)}
+function modal(html){$('modalBox').innerHTML=html;$('modal').classList.add('show')}
+function fecharModal(){$('modal').classList.remove('show')}
+const nItens = () => S.cart.reduce((s,i)=>s+i.q,0);
+const subtotal = () => S.cart.reduce((s,i)=>s+i.q*cup(i.id).preco,0);
+
+function go(t,arg){S.tela=t;S.arg=arg;if(t==='detalhe')S.qtd=1;render();$('main').scrollTop=0}
+
+function titulo(titulo,voltar){$('top').innerHTML=(voltar?`<button class="back" aria-label="Voltar" onclick="go('${voltar}')">←</button>`:'')+`<h2>${titulo}</h2>`}
+function nav(){
+  if(S.tela.startsWith('admin')){
+    $('nav').innerHTML=[['adminLista','🧁','Cupcakes'],['adminPedidos','📋','Pedidos'],['sair','↩','Sair']].map(([t,i,l])=>
+      `<button class="${S.tela===t?'on':''}" onclick="${t==='sair'?'sair()':`go('${t}')`}"><span class="ic">${i}</span>${l}</button>`).join('');return}
+  const n=nItens();
+  $('nav').innerHTML=`<button class="${S.tela==='catalogo'||S.tela==='detalhe'?'on':''}" onclick="go('catalogo')"><span class="ic">🏠</span>Início</button>
+  <button class="${S.tela==='carrinho'?'on':''}" onclick="go('carrinho')"><span class="ic">🛒</span>Carrinho${n?`<span class="badge">${n}</span>`:''}</button>
+  <button class="${['pedidos','pedido','login','cadastro'].includes(S.tela)?'on':''}" onclick="go(S.logado?'pedidos':'login')"><span class="ic">📦</span>Pedidos</button>`;
+}
+
+const T = {
+catalogo(){
+  titulo('🧁 CupcakeApp');
+  const termo=S.busca.trim().toLowerCase();
+  const lista=CUPS.filter(c=>c.ativo&&(S.cat==='Todos'||c.cat===S.cat)&&c.nome.toLowerCase().includes(termo));
+  return `<input class="search" placeholder="Buscar cupcake…" value="${S.busca}" oninput="S.busca=this.value;render(true)" aria-label="Buscar cupcake">
+  <div class="chips">${CATS.map(c=>`<button class="chip ${S.cat===c?'on':''}" onclick="S.cat='${c}';render()">${c}</button>`).join('')}</div>
+  ${lista.length?`<div class="grid">${lista.map(c=>`<div class="card" onclick="go('detalhe',${c.id})">${pic(c,120)}
+     <div class="info"><div class="nm">${c.nome}</div><div class="price">${brl(c.preco)}</div>
+     ${c.vegano?'<span class="tag">Vegano</span>':''}${c.zero?'<span class="tag">Zero açúcar</span>':''}</div></div>`).join('')}</div>`
+   :`<div class="empty"><div class="big">🔍</div>Não encontramos cupcakes com "${S.busca}". Tente outro nome ou veja todas as categorias.<br><small>(MSG11)</small></div>`}`;
+},
+detalhe(){
+  const c=cup(S.arg);titulo(c.nome,'catalogo');
+  const al=c.ing.filter(i=>i[1]);
+  return `${pic(c,220)}
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+    <h2 style="font-size:22px">${c.nome}</h2><span class="price" style="font-size:20px">${brl(c.preco)}</span></div>
+  <p class="note">${c.tam} • ${c.peso} g • ${c.cat}</p>
+  <p style="margin:10px 0;line-height:1.5">${c.desc}</p>
+  <b>Ingredientes</b>
+  <div class="ing">${c.ing.map(i=>`<span class="${i[1]?'al':''}">${i[1]?'⚠ ':''}${i[0]}</span>`).join('')}</div>
+  ${al.length?`<div class="alert">⚠ <b>Contém alergênicos:</b> ${al.map(i=>i[0]).join(', ')}.</div>`:''}
+  <div style="display:flex;align-items:center;justify-content:space-between;margin:16px 0">
+    <b>Quantidade</b>
+    <div class="qty"><button aria-label="Diminuir" onclick="S.qtd=Math.max(1,S.qtd-1);render()">−</button><span>${S.qtd}</span>
+    <button aria-label="Aumentar" onclick="if(S.qtd>=20){toast('O máximo é 20 unidades por sabor. (MSG13)')}else{S.qtd++;render()}">+</button></div></div>
+  <button class="btn" onclick="addCart(${c.id})">Adicionar ao carrinho • ${brl(c.preco*S.qtd)}</button>`;
+},
+carrinho(){
+  titulo('Carrinho');
+  if(!S.cart.length) return `<div class="empty"><div class="big">🛒</div>Seu carrinho está vazio. Que tal escolher um cupcake?<br><small>(MSG14)</small><br><br>
+    <button class="btn" onclick="go('catalogo')">Ver cardápio</button></div>`;
+  const sub=subtotal();
+  return S.cart.map(i=>{const c=cup(i.id);return `<div class="row"><div style="width:56px;border-radius:8px;overflow:hidden">${pic(c,56)}</div>
+    <div class="grow"><b style="font-size:14px">${c.nome}</b><div class="price" style="font-size:14px">${brl(c.preco*i.q)}</div></div>
+    <div class="qty"><button aria-label="Diminuir" onclick="alt(${i.id},-1)">−</button><span>${i.q}</span><button aria-label="Aumentar" onclick="alt(${i.id},1)">+</button></div>
+    <button class="back" aria-label="Remover" onclick="rem(${i.id})">🗑</button></div>`}).join('')+
+  `<div class="sum" style="margin:14px 0"><div><span>Subtotal</span><span>${brl(sub)}</span></div>
+   <div><span>Taxa de entrega</span><span>${brl(TAXA)}</span></div><div class="tot"><span>Total</span><span>${brl(sub+TAXA)}</span></div></div>
+   <button class="btn" onclick="if(S.logado){go('checkout')}else{S.proxima='checkout';go('login');toast('Entre na sua conta para finalizar. Seu carrinho foi guardado.')}">Finalizar pedido</button>`;
+},
+login(){
+  titulo('Entrar',S.proxima?'carrinho':'catalogo');
+  return `<form onsubmit="return entrar(event)" novalidate>
+  <label for="em">E-mail</label><input id="em" type="email" placeholder="nome@exemplo.com"><div id="e_em"></div>
+  <label for="se">Senha</label><input id="se" type="password"><div id="e_se"></div>
+  <p class="note">Dica do protótipo: use admin@cupcakeapp.com.br para entrar como administrador.</p>
+  <button class="btn" style="margin-top:18px">Entrar</button></form>
+  <button class="btn ghost" style="margin-top:10px" onclick="go('cadastro')">Criar conta</button>`;
+},
+cadastro(){
+  titulo('Criar conta','login');
+  return `<form onsubmit="return cadastrar(event)" novalidate>
+  <label for="cn">Nome</label><input id="cn"><div id="e_cn"></div>
+  <label for="ce">E-mail</label><input id="ce" type="email"><div id="e_ce"></div>
+  <label for="ct">Telefone</label><input id="ct" placeholder="(11) 99999-9999">
+  <label for="cs">Senha</label><input id="cs" type="password"><p class="note">Mínimo de 8 caracteres.</p><div id="e_cs"></div>
+  <button class="btn" style="margin-top:18px">Criar conta</button></form>`;
+},
+checkout(){
+  titulo('Finalizar pedido','carrinho');
+  const sub=subtotal()||25.8;
+  return `<div class="sum" style="background:#fff;border-radius:12px;padding:12px">
+    ${(S.cart.length?S.cart:[{id:1,q:2}]).map(i=>`<div><span>${i.q}× ${cup(i.id).nome}</span><span>${brl(i.q*cup(i.id).preco)}</span></div>`).join('')}
+    <div><span>Entrega</span><span>${brl(TAXA)}</span></div><div class="tot"><span>Total</span><span>${brl(sub+TAXA)}</span></div></div>
+  <form onsubmit="return confirmar(event)" novalidate>
+  <label for="cep">CEP</label><input id="cep" inputmode="numeric" placeholder="00000-000" oninput="autoCep(this)"><div id="e_cep"></div>
+  <label for="rua">Rua</label><input id="rua"><div id="e_rua"></div>
+  <div style="display:flex;gap:10px"><div style="flex:1"><label for="num">Número</label><input id="num"></div>
+  <div style="flex:2"><label for="comp">Complemento</label><input id="comp"></div></div>
+  <label for="bai">Bairro</label><input id="bai">
+  <label>Pagamento na entrega</label>
+  <div class="radio">${['PIX','Cartão','Dinheiro'].map((p,i)=>`<label><input type="radio" name="pg" ${i?'':'checked'}><span>${p}</span></label>`).join('')}</div>
+  <label for="obs">Observação (opcional)</label><textarea id="obs" rows="2" placeholder="Ex.: tocar o interfone 12"></textarea>
+  <button class="btn" style="margin-top:18px" id="btnConf">Confirmar pedido</button></form>`;
+},
+confirmacao(){
+  titulo('Pedido confirmado');
+  return `<div class="empty" style="color:var(--sec)"><div class="big">✅</div><h2>Pedido nº 1052 recebido!</h2>
+  <p style="margin:10px 0 24px;color:var(--muted)">Você pode acompanhar em Meus pedidos. Previsão de entrega: 40–60 min. (MSG21)</p>
+  <button class="btn" onclick="go('pedido',1052)">Acompanhar pedido</button>
+  <button class="btn ghost" style="margin-top:10px" onclick="go('catalogo')">Voltar ao início</button></div>`;
+},
+pedidos(){
+  titulo('Meus pedidos');
+  return S.pedidos.slice().reverse().map(p=>`<div class="row" style="cursor:pointer" onclick="go('pedido',${p.id})">
+   <div class="grow"><b>Pedido nº ${p.id}</b><div class="note">${p.data} • ${brl(p.total)}</div></div>
+   <span class="st ${p.status}">${p.status.replace('_',' ')}</span></div>`).join('') +
+   `<button class="btn ghost" style="margin-top:16px" onclick="sair()">Sair da conta</button>`;
+},
+pedido(){
+  const p=S.pedidos.find(x=>x.id==S.arg)||S.pedidos[S.pedidos.length-1];titulo('Pedido nº '+p.id,'pedidos');
+  const etapas=['RECEBIDO','EM_PREPARO','SAIU_PARA_ENTREGA','ENTREGUE'];const idx=etapas.indexOf(p.status);
+  return `<span class="st ${p.status}">${p.status.replace(/_/g,' ')}</span>
+  <div class="tl">${p.status==='CANCELADO'?'<div class="done">Pedido cancelado</div>':etapas.map((e,i)=>`<div class="${i<=idx?'done':''}">${e.replace(/_/g,' ').toLowerCase()}</div>`).join('')}</div>
+  <div class="sum" style="background:#fff;border-radius:12px;padding:12px"><div><span>2× Red Velvet</span><span>R$ 25,80</span></div>
+  <div><span>Entrega</span><span>R$ 8,00</span></div><div class="tot"><span>Total</span><span>${brl(p.total)}</span></div></div>
+  <p class="note" style="margin-top:10px">Entrega: Rua das Flores, 120 – Centro, São Paulo/SP</p>
+  ${p.status==='RECEBIDO'?`<button class="btn ghost" style="margin-top:16px;color:var(--err);border-color:var(--err)" onclick="pedirCancel(${p.id})">Cancelar pedido</button>`:''}`;
+},
+adminLista(){
+  titulo('Admin • Cupcakes');
+  return `<button class="btn" style="margin-bottom:14px" onclick="go('adminForm')">+ Novo cupcake</button>`+
+  CUPS.map(c=>`<div class="row"><div style="width:48px;border-radius:8px;overflow:hidden">${pic(c,48)}</div>
+  <div class="grow"><b style="font-size:14px">${c.nome}</b><div class="note">${brl(c.preco)} • ${c.ativo?'Ativo':'Inativo'}</div></div>
+  <button class="switch ${c.ativo?'on':''}" aria-label="Ativar/desativar" onclick="cup(${c.id}).ativo=!cup(${c.id}).ativo;render();toast('${c.nome} '+(cup(${c.id}).ativo?'ativado':'desativado'))"></button></div>`).join('');
+},
+adminForm(){
+  titulo('Novo cupcake','adminLista');
+  return `<form onsubmit="return salvarCup(event)" novalidate>
+  <label for="an">Nome</label><input id="an"><div id="e_an"></div>
+  <label for="ac">Categoria</label><select id="ac">${CATS.slice(1).map(c=>`<option>${c}</option>`).join('')}</select>
+  <label for="ad">Descrição</label><textarea id="ad" rows="3"></textarea><div id="e_ad"></div>
+  <div style="display:flex;gap:10px"><div style="flex:1"><label for="ap">Preço (R$)</label><input id="ap" inputmode="decimal"></div>
+  <div style="flex:1"><label for="at">Tamanho</label><select id="at"><option>Mini</option><option selected>Tradicional</option><option>Gigante</option></select></div></div>
+  <div id="e_ap"></div>
+  <label for="af">Foto (WebP, até 200 KB)</label><input id="af" type="file" accept="image/webp,image/jpeg,image/png"><div id="e_af"></div>
+  <label>Ingredientes</label><div class="ing">${['Farinha de trigo','Ovos','Leite','Cacau','Morango','Amendoim'].map(i=>`<span><input type="checkbox" style="width:auto"> ${i}</span>`).join('')}</div>
+  <button class="btn" style="margin-top:18px">Salvar</button></form>`;
+},
+adminPedidos(){
+  titulo('Admin • Pedidos');
+  const prox={RECEBIDO:['EM_PREPARO','Iniciar preparo'],EM_PREPARO:['SAIU_PARA_ENTREGA','Despachar'],SAIU_PARA_ENTREGA:['ENTREGUE','Confirmar entrega']};
+  return S.pedidos.slice().reverse().map(p=>`<div class="row"><div class="grow"><b>Nº ${p.id}</b> <span class="st ${p.status}">${p.status.replace(/_/g,' ')}</span>
+   <div class="note">${p.data} • ${brl(p.total)}</div></div>
+   ${prox[p.status]?`<button class="chip on" onclick="avancar(${p.id},'${prox[p.status][0]}')">${prox[p.status][1]}</button>`:''}</div>`).join('');
+}};
+
+function render(keepFocus){
+  const pos=keepFocus&&document.activeElement?document.activeElement.selectionStart:null;
+  $('main').innerHTML=T[S.tela]();nav();
+  if(keepFocus){const s=document.querySelector('.search');s.focus();s.setSelectionRange(pos,pos)}
+}
+function addCart(id){
+  const it=S.cart.find(i=>i.id===id);
+  if(it){if(it.q+S.qtd>20){it.q=20;toast('O máximo é 20 unidades por sabor. (MSG13)');render();return}it.q+=S.qtd}else S.cart.push({id,q:S.qtd});
+  toast(`${S.qtd}× ${cup(id).nome} adicionado ao carrinho. <u style="cursor:pointer" onclick="go('carrinho')">Ver carrinho</u> (MSG20)`);render();
+}
+function alt(id,d){const it=S.cart.find(i=>i.id===id);if(d>0&&it.q>=20){toast('O máximo é 20 unidades por sabor. (MSG13)');return}
+  it.q+=d;if(it.q<1){rem(id);return}render()}
+function rem(id){const i=S.cart.findIndex(x=>x.id===id);const item=S.cart.splice(i,1)[0];render();
+  window._undo=()=>{S.cart.splice(i,0,item);render();toast('Item restaurado.')};
+  toast(`${cup(id).nome} removido. <u style="cursor:pointer;pointer-events:auto" onclick="_undo()">Desfazer</u> (MSG19)`)}
+function erro(campo,msg){const el=$(campo);el.classList.add('invalid');$('e_'+campo).innerHTML=`<div class="ferr">${msg}</div>`}
+function limpar(){document.querySelectorAll('.invalid').forEach(e=>e.classList.remove('invalid'));document.querySelectorAll('[id^=e_]').forEach(e=>e.innerHTML='')}
+function entrar(ev){ev.preventDefault();limpar();const em=$('em').value.trim(),se=$('se').value;let ok=true;
+  if(!/^\S+@\S+\.\S+$/.test(em)){erro('em','Digite um e-mail válido, como nome@exemplo.com. (MSG02)');ok=false}
+  if(!se){erro('se','Preencha este campo. (MSG01)');ok=false}
+  else if(se.length<8){erro('se','E-mail ou senha incorretos. Confira e tente de novo. (MSG05)');ok=false}
+  if(!ok)return false;
+  if(em==='admin@cupcakeapp.com.br'){S.admin=true;go('adminLista');toast('Bem-vindo, administrador.');return false}
+  S.logado=true;const p=S.proxima;S.proxima=null;go(p||'pedidos');toast('Você entrou na sua conta.');return false}
+function cadastrar(ev){ev.preventDefault();limpar();let ok=true;
+  if(!$('cn').value.trim()){erro('cn','Preencha este campo. (MSG01)');ok=false}
+  const e=$('ce').value.trim();if(!/^\S+@\S+\.\S+$/.test(e)){erro('ce','Digite um e-mail válido, como nome@exemplo.com. (MSG02)');ok=false}
+  else if(e==='mariana@email.com'){erro('ce','Este e-mail já tem cadastro. Quer entrar na sua conta? (MSG03)');ok=false}
+  if($('cs').value.length<8){erro('cs','A senha precisa ter pelo menos 8 caracteres. (MSG04)');ok=false}
+  if(!ok)return false;S.logado=true;const p=S.proxima;S.proxima=null;go(p||'catalogo');toast('Conta criada! Bem-vinda(o) ao CupcakeApp.');return false}
+function autoCep(i){const d=i.value.replace(/\D/g,'');if(d.length===8){$('rua').value='Rua das Flores';$('bai').value='Centro';toast('Endereço preenchido pelo CEP.')}}
+function confirmar(ev){ev.preventDefault();limpar();let ok=true;
+  if($('cep').value.replace(/\D/g,'').length!==8){erro('cep','CEP inválido. Digite os 8 números do seu CEP. (MSG06)');ok=false}
+  if(!$('rua').value.trim()||!$('num').value.trim()){erro('rua','Informe rua, número, bairro e cidade para a entrega. (MSG07)');ok=false}
+  if(!ok)return false;const b=$('btnConf');b.textContent='Enviando…';b.disabled=true;
+  setTimeout(()=>{S.pedidos.push({id:1052,data:'09/11/2026',total:(subtotal()||25.8)+TAXA,status:'RECEBIDO'});S.cart=[];go('confirmacao')},700);return false}
+function pedirCancel(id){modal(`<b>Cancelar pedido</b><p>Cancelar o pedido nº ${id}? Esta ação não pode ser desfeita. (MSG18)</p>
+  <button class="btn ghost" onclick="fecharModal()">Manter pedido</button>
+  <button class="btn" style="margin-top:8px;background:var(--err)" onclick="S.pedidos.find(p=>p.id==${id}).status='CANCELADO';fecharModal();render();toast('Pedido cancelado.')">Cancelar pedido</button>`)}
+function salvarCup(ev){ev.preventDefault();limpar();let ok=true;
+  if(!$('an').value.trim()){erro('an','Preencha este campo. (MSG01)');ok=false}
+  if(!$('ad').value.trim()||!$('af').files.length){erro(!$('af').files.length?'af':'ad','Para salvar, adicione uma foto e uma descrição do cupcake. (MSG08)');ok=false}
+  const p=parseFloat($('ap').value.replace(',','.'));if(!(p>0)){erro('ap','O preço deve ser maior que R$ 0,00. (MSG09)');ok=false}
+  if(!ok)return false;go('adminLista');toast('Cupcake salvo com sucesso. (MSG22)');return false}
+function avancar(id,st){S.pedidos.find(p=>p.id==id).status=st;render();toast(`Pedido nº ${id} → ${st.replace(/_/g,' ')}`)}
+function sair(){S.logado=false;S.admin=false;go('catalogo');toast('Você saiu da sua conta.')}
+render();
+</script>
+</body>
+</html>

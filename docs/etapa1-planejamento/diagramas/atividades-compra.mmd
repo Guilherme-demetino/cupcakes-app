@@ -1,0 +1,25 @@
+flowchart TD
+    I((Início)) --> A[Abrir catálogo]
+    A --> B{Deseja filtrar<br/>ou buscar?}
+    B -- Sim --> B1[Escolher categoria / digitar termo] --> C
+    B -- Não --> C[Tocar em um cupcake]
+    C --> D[Ver detalhes:<br/>foto, ingredientes, alergênicos, preço]
+    D --> E{Quer comprar?}
+    E -- Não --> A
+    E -- Sim --> F[Escolher quantidade 1–20]
+    F --> G[Adicionar ao carrinho]
+    G --> H{Continuar<br/>comprando?}
+    H -- Sim --> A
+    H -- Não --> J[Abrir carrinho e revisar]
+    J --> K[Tocar em Finalizar]
+    K --> L{Está logado?}
+    L -- Não --> L1[Login ou cadastro] --> M
+    L -- Sim --> M[Informar endereço e pagamento]
+    M --> N{Dados válidos?}
+    N -- Não --> N1[Exibir erros nos campos] --> M
+    N -- Sim --> O{Itens ainda<br/>ativos?}
+    O -- Não --> O1[Remover itens inativos<br/>e avisar MSG15] --> J
+    O -- Sim --> P[Gravar pedido com status RECEBIDO]
+    P --> Q[Esvaziar carrinho]
+    Q --> R[Exibir confirmação com nº do pedido]
+    R --> F2((Fim))

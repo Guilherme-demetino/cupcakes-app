@@ -1,0 +1,13 @@
+flowchart LR
+    T1[T1 Catálogo] --> T2[T2 Detalhes]
+    T2 --> T3[T3 Carrinho]
+    T1 --> T3
+    T3 --> T4{Logado?}
+    T4 -- não --> T5[T5 Login] --> T6[T6 Checkout]
+    T5 --> T7[T7 Cadastro] --> T6
+    T4 -- sim --> T6
+    T6 --> T8[T8 Confirmação]
+    T8 --> T9[T9 Meus pedidos] --> T10[T10 Detalhe do pedido]
+    T5 -. perfil ADMIN .-> A1[A1 Admin: Cupcakes]
+    A1 --> A2[A2 Admin: Form. cupcake]
+    A1 --> A3[A3 Admin: Pedidos]
