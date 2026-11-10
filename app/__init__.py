@@ -7,7 +7,9 @@ Aqui juntamos as três camadas do MVC:
 """
 import logging
 import os
+from datetime import timezone
 from decimal import Decimal
+from zoneinfo import ZoneInfo
 
 from dotenv import load_dotenv
 from flask import Flask, render_template, session
@@ -32,6 +34,10 @@ def create_app(config=None):
         UPLOAD_FOLDER=os.path.join(os.path.dirname(__file__), "static", "img", "cupcakes"),
         UPLOAD_URL="/static/img/cupcakes",
         MAX_CONTENT_LENGTH=2 * 1024 * 1024,  # recusa envios acima de 2 MB antes de ler
+        # Fuso em que o banco grava as datas. No Render o servidor usa UTC (defeito D11);
+        # no PC do aluno fica vazio, porque o PostgreSQL já grava no horário local.
+        DB_TIMEZONE=os.getenv("DB_TIMEZONE", ""),
+        FUSO_EXIBICAO="America/Sao_Paulo",
     )
     if config:
         app.config.update(config)
@@ -59,10 +65,24 @@ def create_app(config=None):
         inteiro = f"{int(inteiro):,}".replace(",", ".")
         return f"R$ {inteiro},{centavos}"
 
+    def hora_local(valor):
+        """Converte a data gravada no banco para o horário de Brasília (D11)."""
+        if valor is None or not app.config["DB_TIMEZONE"]:
+            return valor
+        origem = timezone.utc if app.config["DB_TIMEZONE"].upper() == "UTC" else ZoneInfo(app.config["DB_TIMEZONE"])
+        if valor.tzinfo is None:
+            valor = valor.replace(tzinfo=origem)
+        return valor.astimezone(ZoneInfo(app.config["FUSO_EXIBICAO"])).replace(tzinfo=None)
+
     @app.template_filter("data_hora")
     def formatar_data_hora(valor):
-        """datetime -> '09/11/2026 às 14:35'"""
-        return valor.strftime("%d/%m/%Y às %H:%M") if valor else ""
+        """datetime -> '09/11/2026 às 14:35' (no horário de Brasília)"""
+        return hora_local(valor).strftime("%d/%m/%Y às %H:%M") if valor else ""
+
+    @app.template_filter("data")
+    def formatar_data(valor):
+        """datetime -> '09/11/2026' (no horário de Brasília)"""
+        return hora_local(valor).strftime("%d/%m/%Y") if valor else ""
 
     @app.context_processor
     def dados_globais():

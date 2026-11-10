@@ -9,7 +9,7 @@
     <dl>
       <div><dt>E-mail</dt><dd>{{ usuario.email }}</dd></div>
       <div><dt>Telefone</dt><dd>{{ usuario.telefone or '—' }}</dd></div>
-      <div><dt>Cliente desde</dt><dd>{{ usuario.criado_em.strftime('%d/%m/%Y') }}</dd></div>
+      <div><dt>Cliente desde</dt><dd>{{ usuario.criado_em | data }}</dd></div>
     </dl>
   </div>
 

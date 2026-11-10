@@ -15,6 +15,9 @@ services:
         generateValue: true
       - key: SESSION_COOKIE_SECURE
         value: "true"
+      # O PostgreSQL do Render grava as datas em UTC; o sistema exibe no horário de Brasília (D11)
+      - key: DB_TIMEZONE
+        value: "UTC"
       - key: DATABASE_URL
         fromDatabase:
           name: cupcakeapp-db

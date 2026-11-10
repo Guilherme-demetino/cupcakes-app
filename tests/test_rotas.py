@@ -158,3 +158,29 @@ def test_erro_inesperado_mostra_msg99_sem_detalhes_tecnicos(app):  # RNF08 (incl
     assert resposta.status_code == 500
     assert "Algo deu errado do nosso lado. Tente novamente em instantes." in pagina
     assert "detalhe interno secreto" not in pagina and "Traceback" not in pagina
+
+
+# ---------------- D11 – horário de Brasília (incluído na Etapa 3) ----------------
+
+def test_data_do_banco_em_utc_e_exibida_no_horario_de_brasilia(app):
+    """No Render o banco grava em UTC: 00:12 de 10/11 (UTC) = 21:12 de 09/11 em Brasília."""
+    from datetime import datetime
+    app.config["DB_TIMEZONE"] = "UTC"
+    filtro_hora, filtro_data = app.jinja_env.filters["data_hora"], app.jinja_env.filters["data"]
+    assert filtro_hora(datetime(2026, 11, 10, 0, 12)) == "09/11/2026 às 21:12"
+    assert filtro_data(datetime(2026, 11, 10, 0, 12)) == "09/11/2026"
+
+
+def test_sem_db_timezone_a_data_nao_e_alterada(app):
+    """No PC do aluno o PostgreSQL já grava no horário local: nada é convertido."""
+    from datetime import datetime
+    app.config["DB_TIMEZONE"] = ""
+    assert app.jinja_env.filters["data_hora"](datetime(2026, 11, 9, 21, 12)) == "09/11/2026 às 21:12"
+    assert app.jinja_env.filters["data_hora"](None) == ""
+
+
+def test_pedido_mostra_horario_convertido(client, app, sql):
+    app.config["DB_TIMEZONE"] = "UTC"
+    sql("UPDATE pedido SET criado_em = '2026-11-10 00:12:00' WHERE id = 1")
+    client.post("/login", data={"email": "mariana@email.com", "senha": "Cupcake@123"})
+    assert "feito em 09/11/2026 às 21:12" in html(client.get("/pedidos/1"))

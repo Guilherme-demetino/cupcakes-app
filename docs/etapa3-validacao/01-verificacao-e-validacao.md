@@ -16,22 +16,22 @@ Cada nível de desenvolvimento da Etapa 1 tem um nível de teste correspondente:
 
 | Desenvolvimento (Etapa 1 e 2) | ⟷ | Teste correspondente | Como foi feito | Resultado |
 |---|---|---|---|---|
-| **Requisitos** (histórias US01–US11, RN, RNF) | ⟷ | **Teste de aceitação** | 5 colegas usam o sistema publicado e preenchem o formulário de avaliação | ⏳ Em andamento ([seção 1.6](#16-validação-com-usuários-teste-de-aceitação)) |
+| **Requisitos** (histórias US01–US12, RN, RNF) | ⟷ | **Teste de aceitação** | 5 colegas usam o sistema publicado e preenchem o formulário de avaliação | 🟡 4 de 5 recebidas ([seção 1.6](#16-validação-com-usuários-teste-de-aceitação)) |
 | **Análise** (casos de uso, critérios de aceitação) | ⟷ | **Teste de sistema** | Roteiro manual de 28 passos, feito pelo aluno no próprio computador, + Lighthouse | ✅ 25 de 25 obrigatórios OK; Lighthouse 94/100/100/91 ([seção 1.3](#13-teste-de-sistema-roteiro-manual)) |
-| **Arquitetura** (MVC + PostgreSQL) | ⟷ | **Teste de integração** | Pytest: models com o banco real, rotas simulando o navegador | ✅ 138 testes passando |
+| **Arquitetura** (MVC + PostgreSQL) | ⟷ | **Teste de integração** | Pytest: models com o banco real, rotas simulando o navegador | ✅ 141 testes passando |
 | **Código** (classes e funções) | ⟷ | **Teste unitário** | Pytest: regras de negócio isoladas, sem banco | ✅ 89 testes passando |
 
 ---
 
 ## 1.2 Testes automatizados (unitários e de integração)
 
-**Total: 227 testes, todos passando** (`pytest`). Os 204 da verificação rodaram também no computador do aluno (Windows + PostgreSQL 18) em 09/11/2026, com o driver oficial `psycopg`. Depois, 23 testes foram somados com a melhoria C01 (promoções).
+**Total: 230 testes, todos passando** (`pytest`). Os 204 da verificação rodaram também no computador do aluno (Windows + PostgreSQL 18) em 09/11/2026, com o driver oficial `psycopg`. Depois, foram somados 23 testes da melhoria C01 (promoções) e 3 da correção D11 (horário).
 
 | Nível | O que testa | Qtd. |
 |---|---|---|
 | **Unitário** | Regras puras, sem banco: cálculo do carrinho (RN03, RN06), fluxo de status (RN07), validação de cadastro, endereço, cupcake e promoção (RN01, RN02, RN12, MSG01–MSG09, MSG23, MSG24) | **89** |
 | **Integração – model + banco** | Consultas e gravações reais no PostgreSQL: preço congelado (RN05), hash bcrypt (RN09), e-mail único (RN08), gatilhos, migração | **37** |
-| **Integração – sistema (rotas)** | O sistema inteiro respondendo como no navegador: telas, mensagens, login, permissões, upload, pedidos de ponta a ponta, promoções | **101** |
+| **Integração – sistema (rotas)** | O sistema inteiro respondendo como no navegador: telas, mensagens, login, permissões, upload, pedidos de ponta a ponta, promoções, horário | **104** |
 
 | Arquivo | Unitário | Integração | Total |
 |---|---|---|---|
@@ -39,14 +39,14 @@ Cada nível de desenvolvimento da Etapa 1 tem um nível de teste correspondente:
 | `test_cupcake_model.py` | – | 9 | 9 |
 | `test_usuario_model.py` | 19 | 11 | 30 |
 | `test_pedido_model.py` | 23 | 11 | 34 |
-| `test_rotas.py` | – | 20 | 20 |
+| `test_rotas.py` | – | 23 | 23 |
 | `test_rotas_auth.py` | 1 | 20 | 21 |
 | `test_rotas_pedido.py` | – | 18 | 18 |
 | `test_admin.py` | 21 | 34 | 55 |
 | `test_promocoes.py` *(Etapa 3 – C01)* | 8 | 15 | 23 |
-| **Total** | **89** | **138** | **227** |
+| **Total** | **89** | **141** | **230** |
 
-**Os testes detectam erros de verdade?** Em cada sprint, regras foram quebradas de propósito no código (*teste de mutação*) para conferir se os testes falhavam. Foram 17 falhas ao longo das sprints e mais 5 na Etapa 3 (1 do RNF08 e 4 das promoções), e **todas as 22 foram detectadas**. Os detalhes por sprint estão no [README da Etapa 2](../etapa2-desenvolvimento/README.md).
+**Os testes detectam erros de verdade?** Em cada sprint, regras foram quebradas de propósito no código (*teste de mutação*) para conferir se os testes falhavam. Foram 17 falhas ao longo das sprints e mais 6 na Etapa 3 (1 do RNF08, 4 das promoções e 1 do horário), e **todas as 23 foram detectadas**. Os detalhes por sprint estão no [README da Etapa 2](../etapa2-desenvolvimento/README.md).
 
 > **Incluído na Etapa 3:** ao montar a matriz de rastreabilidade ([seção 1.4](#14-matriz-de-rastreabilidade)), percebi que o **RNF08** (erro inesperado mostra mensagem amigável) não tinha teste. Criei `test_erro_inesperado_mostra_msg99_sem_detalhes_tecnicos`, que também passou no teste de mutação. Com ele, o total foi de 203 para 204.
 
@@ -177,6 +177,7 @@ Todos os defeitos abaixo foram encontrados ao **conferir as telas e os testes**,
 | D8 | Instalação | Era preciso criar os bancos manualmente no pgAdmin, um passo propenso a erro e à codificação errada | `init-db` e os testes criam o banco sozinho, em UTF-8 | 2 (pós-Sprint 4) |
 | D9 | Requisitos | RNF08 sem teste automatizado | Teste criado (+1 teste) | 3 |
 | D10 | Admin – CSS | Interruptor de ativo (30 px) e ingredientes (40 px) abaixo dos 44 px do RNF03 | Área de toque aumentada para 44 px, sem mudar o visual | 3 |
+| D11 | Site publicado | Horários dos pedidos **3 horas adiantados**: o PostgreSQL do Render grava em UTC (ex.: pedido de 21:12 aparecia como 00:12 do dia seguinte). Encontrado ao conferir o banco depois das avaliações | Datas convertidas para o horário de Brasília na exibição (`DB_TIMEZONE=UTC` no Render); +3 testes | 3 |
 
 **Defeito conhecido, não corrigido:** os avisos (*toasts*) aparecem no topo da tela por 4 segundos e podem cobrir o primeiro campo de um formulário nesse tempo. O impacto é baixo, porque eles somem sozinhos. Fica para avaliação com os colegas.
 
@@ -189,9 +190,13 @@ A validação é feita por **5 colegas de curso ou profissionais da área**, que
 | Avaliador | Data | Laudo | Status |
 |---|---|---|---|
 | 1 – Gabriel Ferreria de Oliveira (profissional de TI, celular, Chrome) | 09/11/2026 | [Laudo 1](avaliacoes/avaliador-1.md): 10/10 funcionalidades OK; notas 5/5; 1 sugestão (C01) | ✅ |
-| 2 | | | ⏳ |
-| 3 | | | ⏳ |
-| 4 | | | ⏳ |
+| 2 – Felipe Silva (colega, celular e computador, Chrome) | 09/11/2026 | [Laudo 2](avaliacoes/avaliador-2.md): 10/10 OK; notas 5/4; compraria: talvez | ✅ |
+| 3 – Eloisa *(nome completo solicitado)* (colega, computador, Chrome) | 09/11/2026 | [Laudo 3](avaliacoes/avaliador-3.md): 10/10 OK; notas 4/4 | ✅ |
+| 4 – José *(nome completo solicitado)* (colega, celular, Chrome) | 09/11/2026 | [Laudo 4](avaliacoes/avaliador-4.md): 10/10 OK; notas 4/4 | ✅ |
 | 5 | | | ⏳ |
 
-As sugestões e correções resultantes serão registradas em `03-correcoes-apos-avaliacao.md`.
+**Resumo parcial (4 de 5):** 40 de 40 verificações de funcionalidade marcadas como "funcionou", nenhum erro relatado, médias de **4,5/5 em facilidade** e **4,25/5 em aparência**, e 3 de 4 avaliadores comprariam por um app assim. A única sugestão (C01, promoções) foi implementada.
+
+**Ponto de atenção (transparência):** na conferência do banco do site publicado em 09/11/2026, às 22:15, **não havia pedidos dos avaliadores**, apenas os 2 de exemplo, embora todos tenham marcado "Finalizar pedido" como funcionando. O log do Render mostra que nenhum dado foi apagado. Os avaliadores serão consultados, e o 5º avaliador vai finalizar um pedido real, que será conferido no banco.
+
+As sugestões e correções resultantes estão em [03 – Correções](03-correcoes-apos-avaliacao.md).

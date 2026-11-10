@@ -14,7 +14,7 @@ Projeto Integrador Transdisciplinar em Engenharia de Software II
 | Etapa | Conteúdo | Status |
 |---|---|---|
 | [Etapa 1 – Planejamento](docs/etapa1-planejamento/) | Escopo, histórias de usuário, UML, IHC, protótipo, banco de dados e dicionário | ✅ Concluída |
-| [Etapa 2 – Desenvolvimento](docs/etapa2-desenvolvimento/) | Front-end, back-end MVC, testes automatizados (227 com a Etapa 3) e [manual de uso](docs/etapa2-desenvolvimento/manual-de-uso.md) | ✅ Concluída |
+| [Etapa 2 – Desenvolvimento](docs/etapa2-desenvolvimento/) | Front-end, back-end MVC, testes automatizados (230 com a Etapa 3) e [manual de uso](docs/etapa2-desenvolvimento/manual-de-uso.md) | ✅ Concluída |
 | [Etapa 3 – Validação](docs/etapa3-validacao/) | Testes de verificação e validação, avaliação de 5 usuários, correções e vídeo | 🚧 Verificação concluída; avaliação dos usuários em andamento |
 
 ## Tecnologias

@@ -224,7 +224,7 @@ Depois de desfazer as mudanças, os 203 testes voltaram a passar.
 
 ## Testes automatizados (total acumulado)
 
-**227 testes, todos passando.** Para rodar: `pytest`. *(203 na Etapa 2 + 24 incluídos na Etapa 3: 1 do RNF08 e 23 das promoções)*
+**230 testes, todos passando.** Para rodar: `pytest`. *(203 na Etapa 2 + 27 incluídos na Etapa 3: 1 do RNF08, 23 das promoções e 3 do horário)*
 
 | Arquivo | Tipo | Qtd. | Sprint |
 |---|---|---|---|

@@ -38,4 +38,7 @@
 
 - **Erros:** nenhum relatado.
 - **Sugestão (cupons/promoções):** registrada como **C01** em [03 – Correções](../03-correcoes-apos-avaliacao.md).
-- **Requisitos confirmados por este teste:** **RNF02** (uso no celular real) e o fluxo completo de cliente e administrador em produção.
+- **Requisitos confirmados por este teste:** **RNF02** (uso no celular real).
+
+**Observação registrada com transparência:**
+- Na conferência do banco do site publicado (09/11/2026, 22:15), **não foi encontrado nenhum pedido** além dos 2 de exemplo, embora o avaliador tenha marcado "Finalizar pedido" como testado e funcionando. O log do Render confirma que nenhum dado foi apagado. O avaliador será consultado para confirmar onde fez o teste.

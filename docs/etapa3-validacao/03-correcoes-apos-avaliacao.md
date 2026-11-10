@@ -20,10 +20,11 @@ Registro de **cada apontamento** dos 5 avaliadores e do que foi feito com ele. O
 
 ## Resumo
 
-- Avaliações recebidas: **1 de 5**
-- Erros relatados: **0**
+- Avaliações recebidas: **4 de 5** (Gabriel, Felipe Silva, Eloisa, José)
+- Erros relatados pelos avaliadores: **0**
+- Defeito encontrado pelo desenvolvedor ao conferir o banco depois das avaliações: **D11** (horário 3 h adiantado no site publicado), corrigido
 - Sugestões: **1** (C01, implementada)
-- Testes automatizados depois das correções: **227 passando**
+- Testes automatizados depois das correções: **230 passando**
 
 ## Evidência – C01 (promoções)
 
