@@ -191,8 +191,8 @@ A validação é feita por **5 colegas de curso ou profissionais da área**, que
 |---|---|---|---|
 | 1 – Gabriel Ferreria de Oliveira (profissional de TI, celular, Chrome) | 09/11/2026 | [Laudo 1](avaliacoes/avaliador-1.md): 10/10 funcionalidades OK; notas 5/5; 1 sugestão (C01) | ✅ |
 | 2 – Felipe Silva (colega, celular e computador, Chrome) | 09/11/2026 | [Laudo 2](avaliacoes/avaliador-2.md): 10/10 OK; notas 5/4; compraria: talvez | ✅ |
-| 3 – Eloisa *(nome completo solicitado)* (colega, computador, Chrome) | 09/11/2026 | [Laudo 3](avaliacoes/avaliador-3.md): 10/10 OK; notas 4/4 | ✅ |
-| 4 – José *(nome completo solicitado)* (colega, celular, Chrome) | 09/11/2026 | [Laudo 4](avaliacoes/avaliador-4.md): 10/10 OK; notas 4/4 | ✅ |
+| 3 – Eloisa Ferreira (colega, computador, Chrome) | 09/11/2026 | [Laudo 3](avaliacoes/avaliador-3.md): 10/10 OK; notas 4/4 | ✅ |
+| 4 – José Almeida (colega, celular, Chrome) | 09/11/2026 | [Laudo 4](avaliacoes/avaliador-4.md): 10/10 OK; notas 4/4 | ✅ |
 | 5 | | | ⏳ |
 
 **Resumo parcial (4 de 5):** 40 de 40 verificações de funcionalidade marcadas como "funcionou", nenhum erro relatado, médias de **4,5/5 em facilidade** e **4,25/5 em aparência**, e 3 de 4 avaliadores comprariam por um app assim. A única sugestão (C01, promoções) foi implementada.

@@ -2,7 +2,7 @@
 
 | Campo | Resposta |
 |---|---|
-| **Avaliador(a)** | Eloisa |
+| **Avaliador(a)** | Eloisa Ferreira |
 | **Perfil** | Colega de curso |
 | **Data do teste** | 09/11/2026 (formulário enviado às 22:09) |
 | **Aparelho / navegador** | Computador / Chrome |
@@ -39,5 +39,5 @@
 - **Erros:** nenhum relatado. **Sugestões:** nenhuma.
 
 **Observações registradas com transparência:**
-- Nome informado **incompleto** (só o primeiro nome). O nome completo foi solicitado à avaliadora.
+- No formulário foi informado só o primeiro nome. O nome completo (**Eloisa Ferreira**) foi confirmado depois com a avaliadora, em 09/11/2026.
 - Na conferência do banco do site publicado (09/11/2026, 22:15), **não foi encontrado nenhum pedido** além dos 2 de exemplo, embora o avaliador tenha marcado "Finalizar pedido" como testado e funcionando. O log do Render confirma que nenhum dado foi apagado. O avaliador será consultado para confirmar onde fez o teste.
