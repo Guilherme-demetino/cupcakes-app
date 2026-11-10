@@ -1,6 +1,10 @@
 # 🧁 CupcakeApp
 
-Loja online responsiva (mobile-first) de cupcakes gourmet. Tem catálogo com detalhes completos e alergênicos, carrinho, pedidos com acompanhamento de status e área administrativa.
+Loja online responsiva (mobile-first) de cupcakes gourmet.
+
+🌐 **Acesse:** **https://cupcakeapp-3x9a.onrender.com** *(servidor gratuito: o primeiro acesso pode levar cerca de 1 minuto)*
+
+ Tem catálogo com detalhes completos e alergênicos, carrinho, pedidos com acompanhamento de status e área administrativa.
 
 Projeto Integrador Transdisciplinar em Engenharia de Software II
 **Aluno:** Guilherme França Demetino – RGM 33160236

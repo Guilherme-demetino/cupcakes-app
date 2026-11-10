@@ -12,7 +12,7 @@
  *     e o link para EDITAR (só para você).
  */
 
-const LINK_DO_SISTEMA = 'https://cupcakeapp.onrender.com'; // ← troque pelo link do seu site
+const LINK_DO_SISTEMA = 'https://cupcakeapp-3x9a.onrender.com'; // link do site publicado
 
 function criarFormulario() {
   const form = FormApp.create('CupcakeApp – Avaliação do sistema');

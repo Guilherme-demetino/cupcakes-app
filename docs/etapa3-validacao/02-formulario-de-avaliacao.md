@@ -21,7 +21,8 @@ Envie esta mensagem junto com o link do sistema e o link do formulário:
 
 > Oi! Estou fazendo o Projeto Integrador de Engenharia de Software e preciso que você teste meu sistema por uns **15 minutos** e me diga o que achou, **principalmente o que deu errado**. Pode ser bem sincero: apontar erros é justamente o que me ajuda.
 >
-> 🧁 **Sistema:** [LINK DO SISTEMA]
+> 🧁 **Sistema:** https://cupcakeapp-3x9a.onrender.com\
+> *(se demorar para abrir, espere 1 minuto e recarregue: o servidor gratuito "acorda" no primeiro acesso)*
 > 📝 **Formulário:** [LINK DO FORMULÁRIO]
 >
 > **O que tentar fazer (como cliente):**

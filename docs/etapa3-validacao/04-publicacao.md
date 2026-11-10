@@ -1,5 +1,7 @@
 # 4. Publicação do sistema (Render)
 
+> 🌐 **Endereço publicado:** **https://cupcakeapp-3x9a.onrender.com** (publicado em 09/11/2026)
+
 Para os avaliadores acessarem de casa, o CupcakeApp é publicado no **Render** (render.com), no plano gratuito. O arquivo [`render.yaml`](../../render.yaml), na raiz do repositório, descreve tudo o que o Render precisa criar:
 
 | Recurso | Plano | O que faz |
