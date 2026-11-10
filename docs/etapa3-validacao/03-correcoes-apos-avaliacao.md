@@ -9,7 +9,7 @@ Registro de **cada apontamento** dos 5 avaliadores e do que foi feito com ele. O
 
 | ID | Avaliador | Tipo | Apontamento | Decisão | O que foi feito | Commit |
 |---|---|---|---|---|---|---|
-| C01 | | | | | | |
+| C01 | 1 – Gabriel | Melhoria | "Adicionar botões laterais para cupons ou promoções no app." | 🕒 Em análise | Cupons e fidelidade estão **fora do escopo** definido na Etapa 1 (doc. 01, seção 1.3, "versões futuras"). A decisão sobre fazer uma versão simples agora está pendente | – |
 | C02 | | | | | | |
 | C03 | | | | | | |
 
@@ -20,6 +20,7 @@ Registro de **cada apontamento** dos 5 avaliadores e do que foi feito com ele. O
 
 ## Resumo
 
-- Apontamentos recebidos: __
-- Corrigidos: __ • Adiados: __ • Não serão feitos: __
+- Avaliações recebidas: **1 de 5**
+- Erros relatados: **0**
+- Sugestões: **1** (C01, em análise)
 - Testes automatizados depois das correções: __ passando

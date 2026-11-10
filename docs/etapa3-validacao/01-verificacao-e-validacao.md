@@ -144,17 +144,17 @@ Liga **cada requisito da Etapa 1** à evidência de que foi atendido.
 | RNF | Meta | Evidência | Status |
 |---|---|---|---|
 | RNF01 Imagens otimizadas | ≤ 200 KB, WebP; detalhes em < 3 s (4G) | Imagens com ~5 KB; `test_foto_acima_de_200kb_e_recusada`; roteiro 22; **Lighthouse Mobile (4G simulado): Performance 94** (roteiro 27) | ✅ |
-| RNF02 Mobile-first | Sem rolagem lateral em 360, 768 e 1280 px | Capturas em 390 px e 1280 px no README da Etapa 2. Celular real: roteiro 25 | 🟡 Parcial |
+| RNF02 Mobile-first | Sem rolagem lateral em 360, 768 e 1280 px | Capturas em 390 px e 1280 px no README da Etapa 2; **avaliador 1 testou tudo no celular, sem erros, e deu nota 5/5 em facilidade e aparência** | ✅ |
 | RNF03 Toque ≥ 44 px | Botões e chips ≥ 44 px | Revisão do `style.css`: botões, chips, quantidade, lixeira e barra inferior ≥ 44 px. Na revisão, o interruptor (30 px) e os ingredientes do admin (40 px) estavam abaixo e foram corrigidos (D10) | ✅ |
 | RNF04 Acessibilidade | Lighthouse ≥ 90; `alt` nas fotos | **Lighthouse: Acessibilidade 100** (roteiro 27); `alt` testado em `test_catalogo_lista_cupcakes...`; erros com `aria-invalid` | ✅ |
 | RNF05 Segurança | bcrypt; SQL parametrizado; login | 6 testes de segurança na Sprint 2 + upload seguro na Sprint 4 | ✅ |
 | RNF06 Admin restrito | Cliente recebe MSG17 | `test_cliente_recebe_msg17` (6 rotas); roteiro 18 | ✅ |
 | RNF07 MVC | Pastas models/views/controllers | Estrutura do repositório (`app/`) | ✅ |
 | RNF08 Erro amigável | MSG99, sem detalhes técnicos | `test_erro_inesperado_mostra_msg99_sem_detalhes_tecnicos` (novo) | ✅ |
-| RNF09 Navegadores | Chrome, Edge, Firefox, Safari | Chrome ✅. Demais: roteiro 26 e avaliação dos colegas | 🟡 Parcial |
+| RNF09 Navegadores | Chrome, Edge, Firefox, Safari | Chrome no computador e no celular ✅. Demais navegadores: aguardando os próximos avaliadores | 🟡 Parcial |
 | RNF10 PostgreSQL | PostgreSQL 14+ | Rodando no PostgreSQL 16 (desenvolvimento) e 18 (PC do aluno) | ✅ |
 
-**Resumo:** 11/11 histórias ✅ • 11/11 regras ✅ • 8/10 RNF ✅ e 2 parciais (RNF02 em celular real e RNF09 em outros navegadores), que serão confirmados pelos avaliadores.
+**Resumo:** 11/11 histórias ✅ • 11/11 regras ✅ • 9/10 RNF ✅ e 1 parcial (RNF09, outros navegadores), que aguarda os próximos avaliadores.
 
 ---
 
@@ -185,7 +185,7 @@ A validação é feita por **5 colegas de curso ou profissionais da área**, que
 
 | Avaliador | Data | Laudo | Status |
 |---|---|---|---|
-| 1 | | | ⏳ |
+| 1 – Gabriel Ferreria de Oliveira (profissional de TI, celular, Chrome) | 09/11/2026 | [Laudo 1](avaliacoes/avaliador-1.md): 10/10 funcionalidades OK; notas 5/5; 1 sugestão (C01) | ✅ |
 | 2 | | | ⏳ |
 | 3 | | | ⏳ |
 | 4 | | | ⏳ |
