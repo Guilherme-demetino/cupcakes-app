@@ -9,7 +9,7 @@ Registro de **cada apontamento** dos 5 avaliadores e do que foi feito com ele. O
 
 | ID | Avaliador | Tipo | Apontamento | Decisão | O que foi feito | Commit |
 |---|---|---|---|---|---|---|
-| C01 | 1 – Gabriel | Melhoria | "Adicionar botões laterais para cupons ou promoções no app." | 🕒 Em análise | Cupons e fidelidade estão **fora do escopo** definido na Etapa 1 (doc. 01, seção 1.3, "versões futuras"). A decisão sobre fazer uma versão simples agora está pendente | – |
+| C01 | 1 – Gabriel | Melhoria | "Adicionar botões laterais para cupons ou promoções no app." | ✅ **Implementado** (promoções). Cupons de desconto continuam fora do escopo (Etapa 1, seção 1.3) | Filtro **🏷️ Promoções** no catálogo, selo de desconto (-17%) e preço riscado nos cards e nos detalhes; campo **preço promocional** no admin (MSG24 se não for menor que o preço normal); carrinho e pedido usam o preço promocional, congelado no pedido (RN05). Novos requisitos: US12 e RN12. **Migração 001** para o banco já publicado, sem apagar dados. **+23 testes** (227 no total) | ver histórico do Git |
 | C02 | | | | | | |
 | C03 | | | | | | |
 
@@ -22,5 +22,13 @@ Registro de **cada apontamento** dos 5 avaliadores e do que foi feito com ele. O
 
 - Avaliações recebidas: **1 de 5**
 - Erros relatados: **0**
-- Sugestões: **1** (C01, em análise)
-- Testes automatizados depois das correções: __ passando
+- Sugestões: **1** (C01, implementada)
+- Testes automatizados depois das correções: **227 passando**
+
+## Evidência – C01 (promoções)
+
+![Promoções: catálogo, filtro, detalhes, validação do admin e lista do admin](img/c01-promocoes.png)
+
+*Da esquerda para a direita: catálogo com selos de desconto, filtro "Promoções", detalhes com preço riscado e economia, admin recusando um preço promocional maior que o normal (MSG24) e lista do admin com os dois preços.*
+
+**Como foi verificado:** 23 testes novos (`tests/test_promocoes.py`), cobrindo validação, preço de venda, filtro, carrinho, preço congelado no pedido, telas do admin e a migração aplicada num banco "antigo". Em seguida, 4 falhas foram introduzidas de propósito (ignorar o preço promocional, aceitar promoção maior, filtro que não filtra, migração rodando toda vez) e **todas foram detectadas**.

@@ -12,7 +12,7 @@
 BEGIN;
 
 DROP TABLE IF EXISTS historico_status, item_pedido, pedido, cupcake_ingrediente,
-                     ingrediente, cupcake, categoria, endereco, usuario CASCADE;
+                     ingrediente, cupcake, categoria, endereco, usuario, migracao CASCADE;
 
 -- ---------------------------------------------------------------------
 -- USUARIO: clientes e administradores (RN08, RN09)
@@ -65,6 +65,7 @@ CREATE TABLE cupcake (
     nome           VARCHAR(80)   NOT NULL,
     descricao      TEXT          NOT NULL CHECK (length(trim(descricao)) > 0),   -- RN01
     preco          NUMERIC(8,2)  NOT NULL CHECK (preco > 0),                     -- RN02
+    preco_promocional NUMERIC(8,2),                                              -- RN12 (Etapa 3, C01)
     tamanho        VARCHAR(12)   NOT NULL DEFAULT 'TRADICIONAL'
                                  CHECK (tamanho IN ('MINI', 'TRADICIONAL', 'GIGANTE')),
     peso_gramas    SMALLINT      NOT NULL CHECK (peso_gramas BETWEEN 10 AND 1000),
@@ -73,6 +74,8 @@ CREATE TABLE cupcake (
     criado_em      TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
     atualizado_em  TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT uk_cupcake_nome UNIQUE (nome),
+    CONSTRAINT ck_cupcake_promocao CHECK (preco_promocional IS NULL
+        OR (preco_promocional > 0 AND preco_promocional < preco)),               -- RN12
     CONSTRAINT fk_cupcake_categoria FOREIGN KEY (categoria_id)
         REFERENCES categoria (id) ON DELETE RESTRICT
 );

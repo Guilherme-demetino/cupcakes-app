@@ -9,8 +9,9 @@
 
   <div class="detalhe-cabecalho">
     <h2>{{ cupcake.nome }}</h2>
-    <span class="preco preco-grande">{{ cupcake.preco | brl }}</span>
+    <span class="preco preco-grande">{% if cupcake.preco_promocional %}<s class="preco-cheio"><span class="sr-only">de </span>{{ cupcake.preco_cheio | brl }}</s> <span class="sr-only">por </span>{% endif %}{{ cupcake.preco | brl }}</span>
   </div>
+  {% if cupcake.preco_promocional %}<p class="faixa-promocao">🏷️ Promoção: economize {{ (cupcake.preco_cheio - cupcake.preco) | brl }} por unidade</p>{% endif %}
   <p class="legenda">{{ cupcake.tamanho_rotulo }} • {{ cupcake.peso_gramas }} g • {{ cupcake.categoria }}</p>
 
   <p class="descricao">{{ cupcake.descricao }}</p>

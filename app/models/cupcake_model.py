@@ -6,8 +6,17 @@ import psycopg
 from ..db import consultar, consultar_um, get_db
 from ..messages import msg
 
+# Campos vistos pelo CLIENTE: "preco" já é o preço de venda (o promocional, se houver – RN12).
+# "preco_cheio" é o preço normal, mostrado riscado quando há promoção.
 _CAMPOS = """
-    c.id, c.nome, c.descricao, c.preco, c.tamanho, c.peso_gramas, c.foto_url,
+    c.id, c.nome, c.descricao, coalesce(c.preco_promocional, c.preco) AS preco,
+    c.preco AS preco_cheio, c.preco_promocional, c.tamanho, c.peso_gramas, c.foto_url,
+    c.categoria_id, cat.nome AS categoria
+"""
+
+# Campos vistos pelo ADMINISTRADOR: os dois preços separados, como estão no banco.
+_CAMPOS_ADMIN = """
+    c.id, c.nome, c.descricao, c.preco, c.preco_promocional, c.tamanho, c.peso_gramas, c.foto_url,
     c.categoria_id, cat.nome AS categoria
 """
 
@@ -23,9 +32,9 @@ def listar_categorias():
     return consultar("SELECT id, nome FROM categoria ORDER BY id")
 
 
-def listar_ativos(categoria_id=None, termo=None):
-    """Cupcakes ativos (RN04), com filtro opcional por categoria e busca por nome (US04).
-    A busca não diferencia maiúsculas de minúsculas."""
+def listar_ativos(categoria_id=None, termo=None, so_promocoes=False):
+    """Cupcakes ativos (RN04), com filtro opcional por categoria, por promoção (US12)
+    e busca por nome (US04). A busca não diferencia maiúsculas de minúsculas."""
     sql = f"""SELECT {_CAMPOS}
               FROM cupcake c JOIN categoria cat ON cat.id = c.categoria_id
               WHERE c.ativo"""
@@ -33,6 +42,8 @@ def listar_ativos(categoria_id=None, termo=None):
     if categoria_id:
         sql += " AND c.categoria_id = %s"
         params.append(categoria_id)
+    if so_promocoes:
+        sql += " AND c.preco_promocional IS NOT NULL"
     if termo:
         sql += " AND lower(c.nome) LIKE lower(%s) ESCAPE '\\'"
         params.append(f"%{_escapar_like(termo)}%")
@@ -94,7 +105,7 @@ class NomeRepetido(Exception):
 def listar_todos():
     """Todos os cupcakes, ativos e inativos, com quantas vezes foram vendidos."""
     return consultar(
-        f"""SELECT {_CAMPOS}, c.ativo,
+        f"""SELECT {_CAMPOS_ADMIN}, c.ativo,
                    (SELECT count(*) FROM item_pedido i WHERE i.cupcake_id = c.id) AS vendas
             FROM cupcake c JOIN categoria cat ON cat.id = c.categoria_id
             ORDER BY c.ativo DESC, c.nome"""
@@ -107,7 +118,7 @@ def listar_ingredientes():
 
 def buscar_para_edicao(cupcake_id):
     """Cupcake (mesmo inativo) com a lista de ids dos ingredientes, para o formulário."""
-    cupcake = consultar_um(f"""SELECT {_CAMPOS}, c.ativo
+    cupcake = consultar_um(f"""SELECT {_CAMPOS_ADMIN}, c.ativo
                                FROM cupcake c JOIN categoria cat ON cat.id = c.categoria_id
                                WHERE c.id = %s""", (cupcake_id,))
     if cupcake:
@@ -130,14 +141,20 @@ def validar_cupcake(dados, tem_foto, categorias_validas, ingredientes_validos):
     if not tem_foto:
         erros["foto"] = msg("MSG08")
 
-    try:
-        preco = Decimal(dados["preco"].replace(".", "").replace(",", ".")) if "," in dados["preco"] \
-            else Decimal(dados["preco"])
-        if preco <= 0 or preco >= Decimal("1000000"):
-            raise InvalidOperation
-        dados["preco_decimal"] = preco.quantize(Decimal("0.01"))
-    except (InvalidOperation, ValueError):
+    dados["preco_decimal"] = _ler_preco(dados["preco"])
+    if dados["preco_decimal"] is None:
         erros["preco"] = msg("MSG09")
+
+    # RN12: preço promocional é opcional; se informado, deve ser menor que o preço normal.
+    dados["promocao_decimal"] = None
+    if (dados.get("preco_promocional") or "").strip():
+        promocao = _ler_preco(dados["preco_promocional"])
+        if promocao is None:
+            erros["preco_promocional"] = "Informe um preço promocional válido ou deixe em branco."
+        elif dados["preco_decimal"] is not None and promocao >= dados["preco_decimal"]:
+            erros["preco_promocional"] = msg("MSG24")
+        else:
+            dados["promocao_decimal"] = promocao
 
     if dados["tamanho"] not in TAMANHOS:
         erros["tamanho"] = "Escolha o tamanho."
@@ -157,6 +174,18 @@ def validar_cupcake(dados, tem_foto, categorias_validas, ingredientes_validos):
     return erros
 
 
+def _ler_preco(texto):
+    """'16,90', '16.90' ou '1.234,50' -> Decimal com 2 casas. Inválido ou <= 0 -> None."""
+    texto = (texto or "").strip()
+    try:
+        preco = Decimal(texto.replace(".", "").replace(",", ".")) if "," in texto else Decimal(texto)
+        if not Decimal("0") < preco < Decimal("1000000"):
+            return None
+        return preco.quantize(Decimal("0.01"))
+    except (InvalidOperation, ValueError):
+        return None
+
+
 def _gravar_ingredientes(db, cupcake_id, ingrediente_ids):
     db.execute("DELETE FROM cupcake_ingrediente WHERE cupcake_id = %s", (cupcake_id,))
     for ingrediente_id in sorted(set(ingrediente_ids)):
@@ -169,23 +198,26 @@ def salvar(dados, foto_url, cupcake_id=None):
     Na edição, foto_url=None mantém a foto atual. Devolve o id."""
     db = get_db()
     valores = (dados["categoria_id"], dados["nome"], dados["descricao"], dados["preco_decimal"],
-               dados["tamanho"], int(dados["peso_gramas"]))
+               dados.get("promocao_decimal"), dados["tamanho"], int(dados["peso_gramas"]))
     try:
         if cupcake_id is None:
             cupcake_id = db.execute(
-                """INSERT INTO cupcake (categoria_id, nome, descricao, preco, tamanho, peso_gramas, foto_url)
-                   VALUES (%s, %s, %s, %s, %s, %s, %s) RETURNING id""", valores + (foto_url,)).fetchone()["id"]
+                """INSERT INTO cupcake (categoria_id, nome, descricao, preco, preco_promocional,
+                                       tamanho, peso_gramas, foto_url)
+                   VALUES (%s, %s, %s, %s, %s, %s, %s, %s) RETURNING id""", valores + (foto_url,)).fetchone()["id"]
         else:
             db.execute(
                 """UPDATE cupcake SET categoria_id = %s, nome = %s, descricao = %s, preco = %s,
-                          tamanho = %s, peso_gramas = %s, foto_url = coalesce(%s, foto_url)
+                          preco_promocional = %s, tamanho = %s, peso_gramas = %s, foto_url = coalesce(%s, foto_url)
                    WHERE id = %s""", valores + (foto_url, cupcake_id))
         _gravar_ingredientes(db, cupcake_id, dados["ingrediente_ids"])
         db.commit()
         return cupcake_id
     except psycopg.IntegrityError as erro:
         db.rollback()
-        raise NomeRepetido(dados["nome"]) from erro
+        if getattr(erro, "sqlstate", None) == "23505":  # violação de UNIQUE: nome repetido
+            raise NomeRepetido(dados["nome"]) from erro
+        raise
     except Exception:
         db.rollback()
         raise

@@ -8,6 +8,7 @@ from pathlib import Path
 import click
 import psycopg
 from flask import current_app, g
+from flask.cli import with_appcontext
 from psycopg.rows import dict_row
 
 PASTA_SQL = Path(__file__).resolve().parent.parent / "database"
@@ -75,9 +76,28 @@ def tabelas_existem(url):
         return conexao.execute("SELECT to_regclass('public.usuario') IS NOT NULL").fetchone()[0]
 
 
+def executar_migracoes(url):
+    """Aplica, uma única vez cada, os arquivos de database/migracoes/ (em ordem de nome).
+    A tabela 'migracao' registra o que já foi aplicado. Devolve os nomes aplicados agora."""
+    aplicadas = []
+    with psycopg.connect(url, autocommit=True) as conexao:
+        conexao.execute("""CREATE TABLE IF NOT EXISTS migracao (
+                               nome        VARCHAR(100) PRIMARY KEY,
+                               aplicada_em TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP)""")
+    for arquivo in sorted((PASTA_SQL / "migracoes").glob("*.sql")):
+        with psycopg.connect(url) as conexao:  # cada migração numa transação: tudo ou nada
+            if conexao.execute("SELECT 1 FROM migracao WHERE nome = %s", (arquivo.name,)).fetchone():
+                continue
+            conexao.execute(arquivo.read_text(encoding="utf-8"))
+            conexao.execute("INSERT INTO migracao (nome) VALUES (%s)", (arquivo.name,))
+            aplicadas.append(arquivo.name)
+    return aplicadas
+
+
 @click.command("init-db")
 @click.option("--se-vazio", is_flag=True,
               help="Só cria as tabelas e os dados de exemplo se o banco estiver vazio (usado no servidor).")
+@with_appcontext
 def init_db_command(se_vazio):
     """Cria o banco (se preciso), as tabelas e os dados de exemplo (APAGA o que existir)."""
     url = current_app.config["DATABASE_URL"]
@@ -85,9 +105,12 @@ def init_db_command(se_vazio):
         if criar_banco_se_nao_existir(url):
             click.echo("Banco de dados criado no PostgreSQL.")
         if se_vazio and tabelas_existem(url):
-            click.echo("O banco já tem dados: nada foi alterado.")
+            aplicadas = executar_migracoes(url)
+            click.echo("O banco já tem dados: nada foi apagado."
+                       + (f" Migrações aplicadas: {', '.join(aplicadas)}." if aplicadas else ""))
             return
         executar_scripts(url, "schema.sql", "seed.sql")
+        executar_migracoes(url)
     except psycopg.OperationalError as erro:
         raise click.ClickException(
             "Não foi possível conectar ao PostgreSQL. Confira se ele está ligado e se a senha "

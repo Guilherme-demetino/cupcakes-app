@@ -41,7 +41,7 @@ Ao revisar esse planejamento para executá-lo, identificamos os pontos abaixo:
 - Pagamento online integrado (gateway de cartão ou PIX automático).
 - Cálculo de frete por distância. Nesta versão a taxa de entrega é fixa.
 - Notificações push e e-mail.
-- Programa de fidelidade e cupons de desconto.
+- Programa de fidelidade e cupons de desconto. *(Na Etapa 3, uma versão simples de **promoções**, com preço promocional definido pelo admin, foi adotada a partir da avaliação C01. Cupons continuam fora do escopo.)*
 - Aplicativo nativo publicado nas lojas (Android/iOS).
 
 ## 1.4 Atores (personas)
@@ -71,6 +71,7 @@ Prioridade pelo método **MoSCoW**: M = Must (obrigatória), S = Should (importa
 | US09 | Como **cliente**, quero cancelar um pedido que ainda não entrou em preparo, para corrigir uma compra errada. | C | 2 |
 | US10 | Como **administrador**, quero cadastrar, editar e desativar cupcakes, para manter o cardápio atualizado. | M | 5 |
 | US11 | Como **administrador**, quero ver os pedidos e atualizar o status deles, para organizar a produção e a entrega. | M | 3 |
+| US12 | Como **cliente**, quero ver os cupcakes em promoção, para aproveitar descontos. *(incluída na Etapa 3, a partir da sugestão C01 do avaliador 1)* | S | 3 |
 
 ### 1.5.1 Critérios de aceitação (formato Dado / Quando / Então)
 
@@ -145,6 +146,7 @@ Prioridade pelo método **MoSCoW**: M = Must (obrigatória), S = Should (importa
 | RN09 | A senha tem no mínimo 8 caracteres e é armazenada apenas como **hash** (bcrypt), nunca em texto puro. |
 | RN10 | Só é possível finalizar um pedido estando logado e com um endereço de entrega válido. |
 | RN11 | Um cupcake que já aparece em algum pedido não pode ser excluído, apenas desativado. Isso preserva o histórico. |
+| RN12 | O preço promocional é opcional e, quando existe, deve ser **menor que o preço normal**. Enquanto a promoção estiver ativa, o cupcake é vendido pelo preço promocional, que também fica congelado no pedido (RN05). *(incluída na Etapa 3)* |
 
 ## 1.7 Requisitos não funcionais
 

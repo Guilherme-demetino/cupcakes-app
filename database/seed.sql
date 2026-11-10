@@ -50,6 +50,10 @@ INSERT INTO cupcake (categoria_id, nome, descricao, preco, tamanho, peso_gramas,
  (2, 'Ninho com Morango', 'Massa branca recheada com creme de leite Ninho e pedaços de morango fresco.',           15.90, 'GIGANTE',     140, '/static/img/cupcakes/ninho-morango.webp'),
  (4, 'Cacau Zero',        'Mini cupcake de cacau adoçado com xilitol, sem adição de açúcar.',                      13.90, 'MINI',         50, '/static/img/cupcakes/cacau-zero.webp');
 
+-- Promoções de exemplo (RN12, incluída na Etapa 3 a partir da avaliação C01)
+UPDATE cupcake SET preco_promocional = 9.90  WHERE nome = 'Limão Siciliano';
+UPDATE cupcake SET preco_promocional = 11.50 WHERE nome = 'Cenoura Vegano';
+
 INSERT INTO cupcake_ingrediente (cupcake_id, ingrediente_id) VALUES
  (1,1),(1,10),(1,2),(1,3),(1,5),(1,11),
  (2,1),(2,12),(2,6),(2,4),(2,2),

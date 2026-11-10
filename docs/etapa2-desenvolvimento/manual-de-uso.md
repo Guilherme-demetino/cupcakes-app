@@ -112,6 +112,16 @@ A **barra inferior** está sempre visível:
 - Digite no campo **Buscar cupcake…** e aperte Enter. Maiúsculas e minúsculas não fazem diferença.
 - Se nada for encontrado, o sistema avisa e mostra o botão **Ver todos os cupcakes**.
 
+### 3.1.1 Promoções
+
+<img src="manual/15-promocoes.png" width="260" alt="Promoções" align="right">
+
+- Toque em **🏷️ Promoções** para ver só os cupcakes com desconto.
+- Os cupcakes em promoção têm um **selo com o desconto** (ex.: -17%) e o **preço antigo riscado**.
+- No carrinho e no pedido vale o **preço promocional**, mesmo que a promoção termine depois da compra.
+
+<br clear="right">
+
 ### 3.2 Ver os detalhes e os alergênicos
 
 | Detalhes do cupcake | Depois de adicionar |
@@ -236,12 +246,17 @@ Entre com a conta de administrador (veja a [seção 2](#2-contas-para-teste)). V
 | Categoria | Obrigatória |
 | Descrição | **Obrigatória.** É o texto que o cliente lê nos detalhes |
 | Preço | Maior que zero. Pode digitar com vírgula, como `16,90` |
+| Preço promocional | **Opcional.** Preencha para colocar o cupcake em promoção; deixe vazio para tirar. Precisa ser **menor que o preço normal** |
 | Peso | De 10 a 1000 gramas |
 | Tamanho | Mini, Tradicional ou Gigante |
 | Foto | **Obrigatória.** WebP, JPG ou PNG de **até 200 KB**. A foto aparece em pré-visualização antes de salvar |
 | Ingredientes | Marque pelo menos um. Os marcados com ⚠ são alergênicos e aparecerão em destaque para o cliente |
 
 Toque em **Salvar**. Se algo estiver faltando, os campos com problema ficam em vermelho, com a explicação embaixo, e nada do que você digitou se perde.
+
+**Promoções:** para colocar um cupcake em promoção, edite-o e preencha **Preço promocional**. Ele passa a aparecer no filtro 🏷️ Promoções da loja, com selo e preço riscado. Para encerrar a promoção, apague o valor e salve.
+
+<img src="manual/27-admin-promocao.png" width="260" alt="Preço promocional inválido">
 
 **Editar:** na lista, toque no **nome** do cupcake. Para manter a foto atual, é só não enviar arquivo nenhum. Mudar o preço **não altera** pedidos já feitos: eles guardam o preço do dia da compra.
 
@@ -266,6 +281,7 @@ Toque em **Salvar**. Se algo estiver faltando, os campos com problema ficam em v
 | "Este cupcake não está mais disponível." | Link de um cupcake fora do cardápio | Toque em **Ver cardápio** |
 | "Para salvar, adicione uma foto e uma descrição do cupcake." | *(Admin)* Cadastro sem foto ou sem descrição | Envie a foto e escreva a descrição |
 | "O preço deve ser maior que R$ 0,00." | *(Admin)* Preço zerado ou inválido | Corrija o preço |
+| "O preço promocional deve ser menor que o preço normal." | *(Admin)* Promoção maior ou igual ao preço | Corrija ou deixe o campo vazio |
 | "A foto deve ter no máximo 200 KB…" | *(Admin)* Foto pesada | Converta para WebP (veja a dica na seção 4.2) |
 | "Não é possível mudar de … para …" | *(Admin)* Tentativa de pular etapa | Siga a ordem do pedido |
 | "Você não tem permissão para acessar esta página." | Cliente tentando abrir a área do administrador | — |
@@ -298,6 +314,6 @@ Com o ambiente virtual ativo (o banco de teste `cupcakeapp_test` é criado sozin
 pytest
 ```
 
-O resultado esperado é **204 passed**. Os testes recriam o banco `cupcakeapp_test` a cada execução, então **nunca** use nele o mesmo banco do sistema.
+O resultado esperado é **227 passed**. Os testes recriam o banco `cupcakeapp_test` a cada execução, então **nunca** use nele o mesmo banco do sistema.
 
 Detalhes da arquitetura, das sprints e do que cada teste verifica estão no [README da Etapa 2](README.md).

@@ -30,8 +30,10 @@
 
     <div class="duas-colunas duas-colunas-iguais">
       {{ campo('preco', 'Preço (R$)', dados.preco or '', erro=erros.preco, attrs='inputmode="decimal" placeholder="12,90" required') }}
-      {{ campo('peso_gramas', 'Peso (g)', dados.peso_gramas or '', erro=erros.peso_gramas, attrs='inputmode="numeric" placeholder="90" required') }}
+      {{ campo('preco_promocional', 'Preço promocional (R$)', dados.preco_promocional or '', erro=erros.preco_promocional,
+               dica='Opcional. Deixe vazio se não estiver em promoção.', attrs='inputmode="decimal" placeholder="—"') }}
     </div>
+    {{ campo('peso_gramas', 'Peso (g)', dados.peso_gramas or '', erro=erros.peso_gramas, attrs='inputmode="numeric" placeholder="90" required') }}
 
     <fieldset class="pagamento">
       <legend class="titulo-secao">Tamanho</legend>

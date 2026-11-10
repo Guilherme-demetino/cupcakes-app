@@ -231,3 +231,13 @@ h3 { font-size: 16px; margin-bottom: 8px; }
 .botao-perigo { background: var(--erro); }
 .botao-perigo:hover { background: #A31515; }
 a[href^="tel:"] { color: var(--primaria); font-weight: 700; }
+
+/* Promoções (Etapa 3 – sugestão C01) */
+.card { position: relative; }
+.selo-promocao { position: absolute; top: 8px; left: 8px; z-index: 1; background: var(--primaria); color: #fff;
+                 font-size: 13px; font-weight: 700; padding: 3px 10px; border-radius: 999px; box-shadow: 0 1px 3px rgba(0,0,0,.2); }
+.preco-cheio { color: var(--suave); font-weight: 400; font-size: .85em; }
+.chip-promocao { border-color: var(--primaria); color: var(--primaria); font-weight: 600; }
+.chip-promocao.ativo { color: #fff; }
+.faixa-promocao { background: #FCE4EC; color: var(--primaria-escura); border-radius: 10px; padding: 8px 12px;
+                  margin-top: 8px; font-size: 15px; font-weight: 600; }

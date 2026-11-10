@@ -29,6 +29,7 @@ MENSAGENS = {
     "MSG21": "Pedido nº {id} recebido! Você pode acompanhar em Meus pedidos.",
     "MSG22": "Cupcake salvo com sucesso.",
     "MSG23": "Digite um telefone com DDD, como (11) 99999-9999.",
+    "MSG24": "O preço promocional deve ser menor que o preço normal.",
     "MSG99": "Algo deu errado do nosso lado. Tente novamente em instantes.",
 }
 

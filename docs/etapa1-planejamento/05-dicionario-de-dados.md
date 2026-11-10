@@ -51,7 +51,8 @@ Produtos vendidos pela loja.
 | categoria_id | INTEGER | NN, FK → categoria.id (RESTRICT) | – | Categoria do produto | 1 |
 | nome | VARCHAR(80) | NN, UK | – | Nome comercial | "Red Velvet" |
 | descricao | TEXT | NN; não pode ser vazio (RN01) | – | Texto exibido na tela de detalhes | "Massa aveludada de cacau…" |
-| preco | NUMERIC(8,2) | NN; > 0 (RN02) | – | Preço de venda atual, em R$ | 12.90 |
+| preco | NUMERIC(8,2) | NN; > 0 (RN02) | – | Preço normal, em R$ | 12.90 |
+| preco_promocional | NUMERIC(8,2) | Opcional; > 0 e **menor que `preco`** (`ck_cupcake_promocao`, RN12) | NULL | Preço em promoção. Quando preenchido, é o preço de venda *(Etapa 3, migração 001)* | 9.90 |
 | tamanho | VARCHAR(12) | NN; CHECK | 'TRADICIONAL' | Porte do cupcake | MINI, TRADICIONAL, GIGANTE |
 | peso_gramas | SMALLINT | NN; entre 10 e 1000 | – | Peso aproximado | 90 |
 | foto_url | VARCHAR(255) | NN; não pode ser vazio (RN01) | – | Caminho da imagem em WebP, até 200 KB (RNF01) | "/static/img/cupcakes/red-velvet.webp" |
@@ -113,6 +114,14 @@ Linha do tempo de cada pedido (US08). É preenchida **automaticamente** pelo gat
 
 ---
 
+## migracao
+Controle das **migrações** aplicadas em bancos que já existiam (ex.: o publicado no Render). Criada automaticamente na Etapa 3.
+
+| Campo | Tipo | Restrições | Padrão | Descrição | Domínio / exemplo |
+|---|---|---|---|---|---|
+| nome | VARCHAR(100) | PK | – | Nome do arquivo em `database/migracoes/` | "001_promocoes.sql" |
+| aplicada_em | TIMESTAMP | NN | agora | Quando a migração foi aplicada | – |
+
 ## Objetos complementares
 
 | Objeto | Tipo | Descrição |
@@ -141,3 +150,4 @@ Linha do tempo de cada pedido (US08). É preenchida **automaticamente** pelo gat
 | RN09 senha com hash | `usuario.senha_hash` com bcrypt (pgcrypto no seed; biblioteca bcrypt na aplicação) |
 | RN10 endereço obrigatório | `pedido.endereco_id` NOT NULL + FK |
 | RN11 não excluir cupcake vendido | FK `fk_item_cupcake` com ON DELETE RESTRICT |
+| RN12 promoção menor que o preço | CHECK `ck_cupcake_promocao` |

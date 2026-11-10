@@ -5,11 +5,14 @@
 <form class="busca" action="{{ url_for('catalogo.index') }}" method="get" role="search">
   <input type="search" name="q" value="{{ termo }}" placeholder="Buscar cupcake…" aria-label="Buscar cupcake" maxlength="80">
   {% if categoria_id %}<input type="hidden" name="categoria" value="{{ categoria_id }}">{% endif %}
+  {% if promocoes %}<input type="hidden" name="promocoes" value="1">{% endif %}
 </form>
 
 <div class="chips" role="list" aria-label="Categorias">
-  <a role="listitem" class="chip {{ 'ativo' if not categoria_id }}"
+  <a role="listitem" class="chip {{ 'ativo' if not categoria_id and not promocoes }}"
      href="{{ url_for('catalogo.index', q=termo or None) }}">Todos</a>
+  <a role="listitem" class="chip chip-promocao {{ 'ativo' if promocoes }}"
+     href="{{ url_for('catalogo.index', promocoes=1, q=termo or None) }}"><span aria-hidden="true">🏷️ </span>Promoções</a>
   {% for cat in categorias %}
     <a role="listitem" class="chip {{ 'ativo' if categoria_id == cat.id }}"
        href="{{ url_for('catalogo.index', categoria=cat.id, q=termo or None) }}">{{ cat.nome }}</a>
@@ -18,9 +21,9 @@
 
 {% if aviso %}
   <div class="vazio">
-    <div class="vazio-icone" aria-hidden="true">{{ '🔍' if termo or categoria_id else '🧁' }}</div>
+    <div class="vazio-icone" aria-hidden="true">{{ '🔍' if termo or categoria_id or promocoes else '🧁' }}</div>
     <p>{{ aviso }}</p>
-    {% if termo or categoria_id %}
+    {% if termo or categoria_id or promocoes %}
       <a class="botao botao-contorno" href="{{ url_for('catalogo.index') }}">Ver todos os cupcakes</a>
     {% endif %}
   </div>
@@ -29,10 +32,11 @@
     {% for c in cupcakes %}
       <li>
         <a class="card" href="{{ url_for('catalogo.detalhe', cupcake_id=c.id) }}">
+          {% if c.preco_promocional %}<span class="selo-promocao">-{{ ((1 - c.preco / c.preco_cheio) * 100) | round | int }}%</span>{% endif %}
           <img src="{{ c.foto_url }}" alt="Cupcake {{ c.nome }}" width="300" height="300" loading="lazy">
           <div class="card-info">
             <span class="card-nome">{{ c.nome }}</span>
-            <span class="preco">{{ c.preco | brl }}</span>
+            <span class="preco">{% if c.preco_promocional %}<s class="preco-cheio"><span class="sr-only">de </span>{{ c.preco_cheio | brl }}</s> <span class="sr-only">por </span>{% endif %}{{ c.preco | brl }}</span>
             <span class="selo">{{ c.categoria }}</span>
           </div>
         </a>

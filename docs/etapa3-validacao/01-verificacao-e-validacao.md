@@ -18,20 +18,20 @@ Cada nível de desenvolvimento da Etapa 1 tem um nível de teste correspondente:
 |---|---|---|---|---|
 | **Requisitos** (histórias US01–US11, RN, RNF) | ⟷ | **Teste de aceitação** | 5 colegas usam o sistema publicado e preenchem o formulário de avaliação | ⏳ Em andamento ([seção 1.6](#16-validação-com-usuários-teste-de-aceitação)) |
 | **Análise** (casos de uso, critérios de aceitação) | ⟷ | **Teste de sistema** | Roteiro manual de 28 passos, feito pelo aluno no próprio computador, + Lighthouse | ✅ 25 de 25 obrigatórios OK; Lighthouse 94/100/100/91 ([seção 1.3](#13-teste-de-sistema-roteiro-manual)) |
-| **Arquitetura** (MVC + PostgreSQL) | ⟷ | **Teste de integração** | Pytest: models com o banco real, rotas simulando o navegador | ✅ 123 testes passando |
-| **Código** (classes e funções) | ⟷ | **Teste unitário** | Pytest: regras de negócio isoladas, sem banco | ✅ 81 testes passando |
+| **Arquitetura** (MVC + PostgreSQL) | ⟷ | **Teste de integração** | Pytest: models com o banco real, rotas simulando o navegador | ✅ 138 testes passando |
+| **Código** (classes e funções) | ⟷ | **Teste unitário** | Pytest: regras de negócio isoladas, sem banco | ✅ 89 testes passando |
 
 ---
 
 ## 1.2 Testes automatizados (unitários e de integração)
 
-**Total: 204 testes, todos passando** (`pytest`). Rodaram no ambiente de desenvolvimento e também no computador do aluno (Windows + PostgreSQL 18) em 09/11/2026, com o driver oficial `psycopg`.
+**Total: 227 testes, todos passando** (`pytest`). Os 204 da verificação rodaram também no computador do aluno (Windows + PostgreSQL 18) em 09/11/2026, com o driver oficial `psycopg`. Depois, 23 testes foram somados com a melhoria C01 (promoções).
 
 | Nível | O que testa | Qtd. |
 |---|---|---|
-| **Unitário** | Regras puras, sem banco: cálculo do carrinho (RN03, RN06), fluxo de status (RN07), validação de cadastro, endereço e cupcake (RN01, RN02, MSG01–MSG09, MSG23) | **81** |
-| **Integração – model + banco** | Consultas e gravações reais no PostgreSQL: preço congelado (RN05), hash bcrypt (RN09), e-mail único (RN08), gatilhos | **31** |
-| **Integração – sistema (rotas)** | O sistema inteiro respondendo como no navegador: telas, mensagens, login, permissões, upload, pedidos de ponta a ponta | **92** |
+| **Unitário** | Regras puras, sem banco: cálculo do carrinho (RN03, RN06), fluxo de status (RN07), validação de cadastro, endereço, cupcake e promoção (RN01, RN02, RN12, MSG01–MSG09, MSG23, MSG24) | **89** |
+| **Integração – model + banco** | Consultas e gravações reais no PostgreSQL: preço congelado (RN05), hash bcrypt (RN09), e-mail único (RN08), gatilhos, migração | **37** |
+| **Integração – sistema (rotas)** | O sistema inteiro respondendo como no navegador: telas, mensagens, login, permissões, upload, pedidos de ponta a ponta, promoções | **101** |
 
 | Arquivo | Unitário | Integração | Total |
 |---|---|---|---|
@@ -43,9 +43,10 @@ Cada nível de desenvolvimento da Etapa 1 tem um nível de teste correspondente:
 | `test_rotas_auth.py` | 1 | 20 | 21 |
 | `test_rotas_pedido.py` | – | 18 | 18 |
 | `test_admin.py` | 21 | 34 | 55 |
-| **Total** | **81** | **123** | **204** |
+| `test_promocoes.py` *(Etapa 3 – C01)* | 8 | 15 | 23 |
+| **Total** | **89** | **138** | **227** |
 
-**Os testes detectam erros de verdade?** Em cada sprint, regras foram quebradas de propósito no código (*teste de mutação*) para conferir se os testes falhavam. Foram 17 falhas ao longo das sprints e mais 1 na Etapa 3, e **todas as 18 foram detectadas**. Os detalhes por sprint estão no [README da Etapa 2](../etapa2-desenvolvimento/README.md).
+**Os testes detectam erros de verdade?** Em cada sprint, regras foram quebradas de propósito no código (*teste de mutação*) para conferir se os testes falhavam. Foram 17 falhas ao longo das sprints e mais 5 na Etapa 3 (1 do RNF08 e 4 das promoções), e **todas as 22 foram detectadas**. Os detalhes por sprint estão no [README da Etapa 2](../etapa2-desenvolvimento/README.md).
 
 > **Incluído na Etapa 3:** ao montar a matriz de rastreabilidade ([seção 1.4](#14-matriz-de-rastreabilidade)), percebi que o **RNF08** (erro inesperado mostra mensagem amigável) não tinha teste. Criei `test_erro_inesperado_mostra_msg99_sem_detalhes_tecnicos`, que também passou no teste de mutação. Com ele, o total foi de 203 para 204.
 
@@ -122,6 +123,7 @@ Liga **cada requisito da Etapa 1** à evidência de que foi atendido.
 | US09 Cancelar pedido | `test_rotas_pedido` (cancelar), `test_pedido_model` (RN07) | 16 | ✅ |
 | US10 Manter cupcakes | `test_admin` (cadastro, edição, upload, ativo) | 21, 22, 23 | ✅ |
 | US11 Gerenciar pedidos | `test_admin` (status, filtro, concorrência) | 18, 19, 20 | ✅ |
+| US12 Ver promoções *(Etapa 3)* | `test_promocoes` (23 testes) | Avaliação C01 | ✅ |
 
 ### Regras de negócio
 
@@ -138,6 +140,7 @@ Liga **cada requisito da Etapa 1** à evidência de que foi atendido.
 | RN09 Senha com hash | bcrypt (pgcrypto) | `test_criar_usuario_grava_hash_bcrypt_e_nao_a_senha` | ✅ |
 | RN10 Login e endereço | `@login_obrigatorio` + validação | `test_checkout_sem_login_vai_para_login_e_volta`; roteiro 8 | ✅ |
 | RN11 Não excluir vendido | FK RESTRICT; sem botão de excluir | Teste do banco na Etapa 1 (doc. 04); `test_tirar_e_voltar_ao_cardapio` | ✅ |
+| RN12 Promoção < preço *(Etapa 3)* | `validar_cupcake` (MSG24) + CHECK | `test_promocao_igual_ou_maior_que_o_preco_mostra_msg24`, `test_banco_tambem_recusa_promocao_maior_que_o_preco` | ✅ |
 
 ### Requisitos não funcionais
 
@@ -154,7 +157,7 @@ Liga **cada requisito da Etapa 1** à evidência de que foi atendido.
 | RNF09 Navegadores | Chrome, Edge, Firefox, Safari | Chrome no computador e no celular ✅. Demais navegadores: aguardando os próximos avaliadores | 🟡 Parcial |
 | RNF10 PostgreSQL | PostgreSQL 14+ | Rodando no PostgreSQL 16 (desenvolvimento) e 18 (PC do aluno) | ✅ |
 
-**Resumo:** 11/11 histórias ✅ • 11/11 regras ✅ • 9/10 RNF ✅ e 1 parcial (RNF09, outros navegadores), que aguarda os próximos avaliadores.
+**Resumo:** 12/12 histórias ✅ • 12/12 regras ✅ • 9/10 RNF ✅ e 1 parcial (RNF09, outros navegadores), que aguarda os próximos avaliadores.
 
 ---
 

@@ -10,7 +10,7 @@ import pytest
 from dotenv import load_dotenv
 
 from app import create_app
-from app.db import criar_banco_se_nao_existir, executar_scripts
+from app.db import criar_banco_se_nao_existir, executar_migracoes, executar_scripts
 
 load_dotenv()
 TEST_DATABASE_URL = os.getenv("TEST_DATABASE_URL")
@@ -22,6 +22,7 @@ def banco():
         pytest.skip("Defina TEST_DATABASE_URL no .env para rodar os testes de banco.")
     criar_banco_se_nao_existir(TEST_DATABASE_URL)  # na 1ª vez, cria o banco de teste sozinho
     executar_scripts(TEST_DATABASE_URL, "schema.sql", "seed.sql")
+    executar_migracoes(TEST_DATABASE_URL)
     return TEST_DATABASE_URL
 
 

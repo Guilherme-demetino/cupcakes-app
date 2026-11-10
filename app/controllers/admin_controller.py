@@ -29,6 +29,7 @@ def _dados_do_formulario():
         "nome": request.form.get("nome", "").strip(),
         "descricao": request.form.get("descricao", "").strip(),
         "preco": request.form.get("preco", "").strip(),
+        "preco_promocional": request.form.get("preco_promocional", "").strip(),
         "tamanho": request.form.get("tamanho", ""),
         "peso_gramas": request.form.get("peso_gramas", "").strip(),
         "categoria_id": request.form.get("categoria_id", type=int),

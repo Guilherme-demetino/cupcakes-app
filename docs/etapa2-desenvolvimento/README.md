@@ -224,7 +224,7 @@ Depois de desfazer as mudanças, os 203 testes voltaram a passar.
 
 ## Testes automatizados (total acumulado)
 
-**204 testes, todos passando.** Para rodar: `pytest`. *(203 na Etapa 2 + 1 teste do RNF08 incluído na Etapa 3)*
+**227 testes, todos passando.** Para rodar: `pytest`. *(203 na Etapa 2 + 24 incluídos na Etapa 3: 1 do RNF08 e 23 das promoções)*
 
 | Arquivo | Tipo | Qtd. | Sprint |
 |---|---|---|---|
@@ -236,6 +236,7 @@ Depois de desfazer as mudanças, os 203 testes voltaram a passar.
 | `tests/test_pedido_model.py` | Unitário + integração | 34 | 3 |
 | `tests/test_rotas_pedido.py` | Integração (simula o navegador) | 18 | 3 |
 | `tests/test_admin.py` | Unitário + integração | 55 | 4 |
+| `tests/test_promocoes.py` | Unitário + integração | 23 | Etapa 3 (C01) |
 
 ### Manual de uso ✅
 
