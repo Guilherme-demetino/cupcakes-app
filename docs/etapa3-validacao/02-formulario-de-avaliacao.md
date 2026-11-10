@@ -23,7 +23,7 @@ Envie esta mensagem junto com o link do sistema e o link do formulário:
 >
 > 🧁 **Sistema:** https://cupcakeapp-3x9a.onrender.com\
 > *(se demorar para abrir, espere 1 minuto e recarregue: o servidor gratuito "acorda" no primeiro acesso)*
-> 📝 **Formulário:** [LINK DO FORMULÁRIO]
+> 📝 **Formulário:** https://docs.google.com/forms/d/e/1FAIpQLScOTQfO6TlaKDLFHjVRCZ_HfHMhufYc7NYs9i8tSZ-nfGto5w/viewform
 >
 > **O que tentar fazer (como cliente):**
 > 1. Navegue pelo cardápio, use a busca e os filtros de categoria.
@@ -44,6 +44,8 @@ Envie esta mensagem junto com o link do sistema e o link do formulário:
 ---
 
 ## B. Perguntas para o Google Forms
+
+> ✅ **Formulário criado em 09/11/2026** com o script `criar-formulario.gs`: https://docs.google.com/forms/d/e/1FAIpQLScOTQfO6TlaKDLFHjVRCZ_HfHMhufYc7NYs9i8tSZ-nfGto5w/viewform
 
 > ⚡ **Jeito rápido:** o script [`criar-formulario.gs`](criar-formulario.gs) cria o formulário inteiro sozinho na sua conta Google. As instruções estão no começo do arquivo: cole em script.google.com e clique em Executar. A única diferença é a pergunta 11 (prints): o Google não permite criar campo de **upload** por script, então ela vira um campo de texto para colar um link. Quem quiser upload pode trocar o campo depois, no editor do formulário.
 

@@ -6,7 +6,7 @@
 | O que o enunciado pede | Onde está | Status |
 |---|---|---|
 | Realizar e documentar os testes (verificação e validação), mostrando que o comportamento esperado foi realizado | [01 – Verificação e validação](01-verificacao-e-validacao.md) | ✅ Verificação concluída • ⏳ Validação aguardando os avaliadores |
-| Oferecer a solução a 5 colegas ou profissionais, com um formulário para bugs, sugestões e prints | [02 – Formulário de avaliação](02-formulario-de-avaliacao.md) + script [`criar-formulario.gs`](criar-formulario.gs) + [04 – Publicação no Render](04-publicacao.md) | ⏳ Pronto para publicar e enviar |
+| Oferecer a solução a 5 colegas ou profissionais, com um formulário para bugs, sugestões e prints | [02 – Formulário de avaliação](02-formulario-de-avaliacao.md) + script [`criar-formulario.gs`](criar-formulario.gs) + [04 – Publicação no Render](04-publicacao.md) | ✅ Site publicado e [formulário criado](https://docs.google.com/forms/d/e/1FAIpQLScOTQfO6TlaKDLFHjVRCZ_HfHMhufYc7NYs9i8tSZ-nfGto5w/viewform). ⏳ Aguardando os avaliadores |
 | Coletar as sugestões, corrigir e incorporar na documentação | [03 – Correções após a avaliação](03-correcoes-apos-avaliacao.md) | ⏳ |
 | PDF com as 5 opiniões/testes | `avaliacoes.pdf` (será gerado a partir das respostas) | ⏳ |
 | Manter tudo documentado no Git, com pastas por etapa | Este repositório | ✅ |
