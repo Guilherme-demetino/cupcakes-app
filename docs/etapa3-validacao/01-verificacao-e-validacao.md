@@ -17,7 +17,7 @@ Cada nível de desenvolvimento da Etapa 1 tem um nível de teste correspondente:
 | Desenvolvimento (Etapa 1 e 2) | ⟷ | Teste correspondente | Como foi feito | Resultado |
 |---|---|---|---|---|
 | **Requisitos** (histórias US01–US11, RN, RNF) | ⟷ | **Teste de aceitação** | 5 colegas usam o sistema publicado e preenchem o formulário de avaliação | ⏳ Em andamento ([seção 1.6](#16-validação-com-usuários-teste-de-aceitação)) |
-| **Análise** (casos de uso, critérios de aceitação) | ⟷ | **Teste de sistema** | Roteiro manual de 28 passos, feito pelo aluno no próprio computador | ✅ 25 de 25 obrigatórios OK ([seção 1.3](#13-teste-de-sistema-roteiro-manual)) |
+| **Análise** (casos de uso, critérios de aceitação) | ⟷ | **Teste de sistema** | Roteiro manual de 28 passos, feito pelo aluno no próprio computador, + Lighthouse | ✅ 25 de 25 obrigatórios OK; Lighthouse 94/100/100/91 ([seção 1.3](#13-teste-de-sistema-roteiro-manual)) |
 | **Arquitetura** (MVC + PostgreSQL) | ⟷ | **Teste de integração** | Pytest: models com o banco real, rotas simulando o navegador | ✅ 123 testes passando |
 | **Código** (classes e funções) | ⟷ | **Teste unitário** | Pytest: regras de negócio isoladas, sem banco | ✅ 81 testes passando |
 
@@ -84,9 +84,22 @@ Cada nível de desenvolvimento da Etapa 1 tem um nível de teste correspondente:
 | 24 | Ver o pedido como cliente | Linha do tempo completa até "Entregue" | US08 | ✅ |
 | 25 | *(opcional)* Abrir no celular pela rede local | Layout adequado à tela pequena | RNF02 | ⏳ |
 | 26 | *(opcional)* Abrir no Edge ou Firefox | Funciona igual ao Chrome | RNF09 | ⏳ |
-| 27 | *(opcional)* Lighthouse (Mobile) | Acessibilidade ≥ 90; detalhes em < 3 s | RNF01/RNF04 | ⏳ |
+| 27 | Lighthouse (Mobile) na tela de detalhes | Acessibilidade ≥ 90; carregamento rápido | RNF01/RNF04 | ✅ Performance 94 • Acessibilidade 100 • Boas práticas 100 • SEO 91 |
 
-**Resultado:** os 25 passos obrigatórios (0 a 24) passaram. Os passos 25 a 27 ficam como evidência complementar e serão preenchidos com prints.
+**Resultado:** os 25 passos obrigatórios (0 a 24) passaram, e o Lighthouse (27) também. Os passos 25 e 26 (celular real e outro navegador) serão cobertos pelos avaliadores, que vão informar aparelho e navegador no formulário.
+
+### Evidência do passo 27 – Lighthouse
+
+Relatório do Lighthouse no Chrome do aluno, em modo **Mobile**, na tela de detalhes do Red Velvet (09/11/2026, 21:02):
+
+![Lighthouse: Performance 94, Acessibilidade 100, Boas práticas 100, SEO 91](img/lighthouse-detalhes-mobile.png)
+
+| Categoria | Nota | Faixa | Meta da Etapa 1 |
+|---|---|---|---|
+| Performance | **94** | 🟢 90–100 | RNF01: carregamento rápido → atingida |
+| Acessibilidade | **100** | 🟢 90–100 | RNF04: ≥ 90 → atingida |
+| Boas práticas | **100** | 🟢 90–100 | – |
+| SEO | **91** | 🟢 90–100 | – |
 
 ---
 
@@ -130,10 +143,10 @@ Liga **cada requisito da Etapa 1** à evidência de que foi atendido.
 
 | RNF | Meta | Evidência | Status |
 |---|---|---|---|
-| RNF01 Imagens otimizadas | ≤ 200 KB, WebP; detalhes em < 3 s (4G) | Imagens com ~5 KB; `test_foto_acima_de_200kb_e_recusada`; roteiro 22. Tempo de carga: aguarda o Lighthouse (roteiro 27) | 🟡 Parcial |
+| RNF01 Imagens otimizadas | ≤ 200 KB, WebP; detalhes em < 3 s (4G) | Imagens com ~5 KB; `test_foto_acima_de_200kb_e_recusada`; roteiro 22; **Lighthouse Mobile (4G simulado): Performance 94** (roteiro 27) | ✅ |
 | RNF02 Mobile-first | Sem rolagem lateral em 360, 768 e 1280 px | Capturas em 390 px e 1280 px no README da Etapa 2. Celular real: roteiro 25 | 🟡 Parcial |
 | RNF03 Toque ≥ 44 px | Botões e chips ≥ 44 px | Revisão do `style.css`: botões, chips, quantidade, lixeira e barra inferior ≥ 44 px. Na revisão, o interruptor (30 px) e os ingredientes do admin (40 px) estavam abaixo e foram corrigidos (D10) | ✅ |
-| RNF04 Acessibilidade | Lighthouse ≥ 90; `alt` nas fotos | `alt` testado em `test_catalogo_lista_cupcakes...`; erros com `aria-invalid`. Nota: aguarda o Lighthouse (roteiro 27) | 🟡 Parcial |
+| RNF04 Acessibilidade | Lighthouse ≥ 90; `alt` nas fotos | **Lighthouse: Acessibilidade 100** (roteiro 27); `alt` testado em `test_catalogo_lista_cupcakes...`; erros com `aria-invalid` | ✅ |
 | RNF05 Segurança | bcrypt; SQL parametrizado; login | 6 testes de segurança na Sprint 2 + upload seguro na Sprint 4 | ✅ |
 | RNF06 Admin restrito | Cliente recebe MSG17 | `test_cliente_recebe_msg17` (6 rotas); roteiro 18 | ✅ |
 | RNF07 MVC | Pastas models/views/controllers | Estrutura do repositório (`app/`) | ✅ |
@@ -141,7 +154,7 @@ Liga **cada requisito da Etapa 1** à evidência de que foi atendido.
 | RNF09 Navegadores | Chrome, Edge, Firefox, Safari | Chrome ✅. Demais: roteiro 26 e avaliação dos colegas | 🟡 Parcial |
 | RNF10 PostgreSQL | PostgreSQL 14+ | Rodando no PostgreSQL 16 (desenvolvimento) e 18 (PC do aluno) | ✅ |
 
-**Resumo:** 11/11 histórias ✅ • 11/11 regras ✅ • 6/10 RNF ✅ e 4 parciais, que dependem das medições do roteiro 25–27 e da avaliação dos colegas.
+**Resumo:** 11/11 histórias ✅ • 11/11 regras ✅ • 8/10 RNF ✅ e 2 parciais (RNF02 em celular real e RNF09 em outros navegadores), que serão confirmados pelos avaliadores.
 
 ---
 
