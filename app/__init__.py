@@ -26,6 +26,8 @@ def create_app(config=None):
         # "Lax" impede que outro site envie formulários (POST) usando a sessão do cliente.
         SESSION_COOKIE_SAMESITE="Lax",
         SESSION_COOKIE_HTTPONLY=True,
+        # No servidor (HTTPS), o cookie da sessão só trafega criptografado
+        SESSION_COOKIE_SECURE=os.getenv("SESSION_COOKIE_SECURE", "").lower() == "true",
         # Fotos enviadas pelo administrador (Sprint 4)
         UPLOAD_FOLDER=os.path.join(os.path.dirname(__file__), "static", "img", "cupcakes"),
         UPLOAD_URL="/static/img/cupcakes",

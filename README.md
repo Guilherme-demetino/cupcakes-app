@@ -49,6 +49,7 @@ cupcakes-app/
 │   ├── etapa1-planejamento/
 │   ├── etapa2-desenvolvimento/
 │   └── etapa3-validacao/
+├── render.yaml        ← publicação no Render
 ├── requirements.txt
 └── run.py
 ```

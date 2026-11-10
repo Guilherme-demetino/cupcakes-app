@@ -46,6 +46,12 @@ def criar_banco_se_nao_existir(url):
     Conecta no banco padrão 'postgres' do servidor para isso. Devolve True se criou."""
     from psycopg.conninfo import conninfo_to_dict, make_conninfo
 
+    try:  # o banco já existe? (no Render ele é criado pela plataforma)
+        psycopg.connect(url).close()
+        return False
+    except psycopg.OperationalError as erro:
+        if "does not exist" not in str(erro) and "não existe" not in str(erro):
+            raise
     nome = conninfo_to_dict(url).get("dbname")
     if not nome or not nome.replace("_", "").isalnum():
         raise click.ClickException(f"Nome de banco inválido na URL: {nome!r} (use letras, números e _).")
@@ -64,13 +70,23 @@ def executar_scripts(url, *arquivos):
             conexao.execute((PASTA_SQL / arquivo).read_text(encoding="utf-8"))
 
 
+def tabelas_existem(url):
+    with psycopg.connect(url) as conexao:
+        return conexao.execute("SELECT to_regclass('public.usuario') IS NOT NULL").fetchone()[0]
+
+
 @click.command("init-db")
-def init_db_command():
+@click.option("--se-vazio", is_flag=True,
+              help="Só cria as tabelas e os dados de exemplo se o banco estiver vazio (usado no servidor).")
+def init_db_command(se_vazio):
     """Cria o banco (se preciso), as tabelas e os dados de exemplo (APAGA o que existir)."""
     url = current_app.config["DATABASE_URL"]
     try:
         if criar_banco_se_nao_existir(url):
             click.echo("Banco de dados criado no PostgreSQL.")
+        if se_vazio and tabelas_existem(url):
+            click.echo("O banco já tem dados: nada foi alterado.")
+            return
         executar_scripts(url, "schema.sql", "seed.sql")
     except psycopg.OperationalError as erro:
         raise click.ClickException(

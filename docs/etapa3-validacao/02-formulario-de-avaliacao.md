@@ -44,7 +44,9 @@ Envie esta mensagem junto com o link do sistema e o link do formulário:
 
 ## B. Perguntas para o Google Forms
 
-**Como criar:** acesse **forms.google.com**, clique em **+ Formulário em branco** e monte as seções abaixo. A coluna "Tipo" diz qual opção escolher no menu de cada pergunta. Em **Configurações**, deixe ativado "Coletar endereços de e-mail" como *Não coletar*, para o avaliador não precisar se identificar por e-mail.
+> ⚡ **Jeito rápido:** o script [`criar-formulario.gs`](criar-formulario.gs) cria o formulário inteiro sozinho na sua conta Google. As instruções estão no começo do arquivo: cole em script.google.com e clique em Executar. A única diferença é a pergunta 11 (prints): o Google não permite criar campo de **upload** por script, então ela vira um campo de texto para colar um link. Quem quiser upload pode trocar o campo depois, no editor do formulário.
+
+**Como criar à mão:** acesse **forms.google.com**, clique em **+ Formulário em branco** e monte as seções abaixo. A coluna "Tipo" diz qual opção escolher no menu de cada pergunta. Em **Configurações**, deixe ativado "Coletar endereços de e-mail" como *Não coletar*, para o avaliador não precisar se identificar por e-mail.
 
 **Título:** CupcakeApp – Avaliação do sistema
 **Descrição:** Obrigado por testar! Este formulário faz parte do Projeto Integrador de Engenharia de Software. Suas respostas e seu nome aparecerão no relatório entregue ao professor.
