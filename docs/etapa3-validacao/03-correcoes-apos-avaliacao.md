@@ -32,3 +32,5 @@ Registro de **cada apontamento** dos 5 avaliadores e do que foi feito com ele. O
 *Da esquerda para a direita: catálogo com selos de desconto, filtro "Promoções", detalhes com preço riscado e economia, admin recusando um preço promocional maior que o normal (MSG24) e lista do admin com os dois preços.*
 
 **Como foi verificado:** 23 testes novos (`tests/test_promocoes.py`), cobrindo validação, preço de venda, filtro, carrinho, preço congelado no pedido, telas do admin e a migração aplicada num banco "antigo". Em seguida, 4 falhas foram introduzidas de propósito (ignorar o preço promocional, aceitar promoção maior, filtro que não filtra, migração rodando toda vez) e **todas foram detectadas**.
+
+**Verificado em produção (Render, 09/11/2026):** o log do servidor registrou às 21:51 *"O banco já tem dados: nada foi apagado. Migrações aplicadas: 001_promocoes.sql."*. Em seguida, o filtro Promoções do site publicado mostrou Cenoura Vegano (-15%) e Limão Siciliano (-17%), e os pedidos existentes foram mantidos.

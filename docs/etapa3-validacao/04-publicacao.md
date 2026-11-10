@@ -30,4 +30,7 @@ A chave secreta (`SECRET_KEY`) é **gerada pelo Render** e não fica no código.
 
 ## Atualizações
 
+**Histórico do banco publicado (log do Render, 09/11/2026):** 21:12 banco criado e populado → 21:16, 21:29, 21:38 e 21:40 *"nada foi alterado"* (4 atualizações do site) → 21:51 *"nada foi apagado. Migrações aplicadas: 001_promocoes.sql"*.
+
+
 A cada `git push` na branch `main`, o Render publica a nova versão sozinho. Os dados do banco são **mantidos**, porque o `init-db --se-vazio` não apaga nada. É assim que as correções feitas depois da avaliação chegam ao site.
