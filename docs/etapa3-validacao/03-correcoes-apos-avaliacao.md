@@ -10,8 +10,7 @@ Registro de **cada apontamento** dos 5 avaliadores e do que foi feito com ele. O
 | ID | Avaliador | Tipo | Apontamento | Decisão | O que foi feito | Commit |
 |---|---|---|---|---|---|---|
 | C01 | 1 – Gabriel | Melhoria | "Adicionar botões laterais para cupons ou promoções no app." | ✅ **Implementado** (promoções). Cupons de desconto continuam fora do escopo (Etapa 1, seção 1.3) | Filtro **🏷️ Promoções** no catálogo, selo de desconto (-17%) e preço riscado nos cards e nos detalhes; campo **preço promocional** no admin (MSG24 se não for menor que o preço normal); carrinho e pedido usam o preço promocional, congelado no pedido (RN05). Novos requisitos: US12 e RN12. **Migração 001** para o banco já publicado, sem apagar dados. **+23 testes** (227 no total) | ver histórico do Git |
-| C02 | | | | | | |
-| C03 | | | | | | |
+| C02 | 5 – Gustavo | Melhoria | "Opção de recuperação de senha." | 🕒 **Adiado** | Recuperar a senha com segurança exige enviar um e-mail com link temporário, e o envio de e-mails está **fora do escopo** definido na Etapa 1 (doc. 01, seção 1.3). Fica registrado como melhoria futura: integração com um serviço de e-mail e um token de redefinição com validade | – |
 
 **Decisões possíveis:**
 - ✅ **Corrigido**;
@@ -20,10 +19,10 @@ Registro de **cada apontamento** dos 5 avaliadores e do que foi feito com ele. O
 
 ## Resumo
 
-- Avaliações recebidas: **4 de 5** (Gabriel Ferreria de Oliveira, Felipe Silva, Eloisa Ferreira, José Almeida)
+- Avaliações recebidas: **5 de 5** (Gabriel Ferreria de Oliveira, Felipe Silva, Eloisa Ferreira, José Almeida, Gustavo Ribeiro de Oliveira)
 - Erros relatados pelos avaliadores: **0**
 - Defeito encontrado pelo desenvolvedor ao conferir o banco depois das avaliações: **D11** (horário 3 h adiantado no site publicado), corrigido
-- Sugestões: **1** (C01, implementada)
+- Sugestões: **2**: C01 (promoções), **implementada**; C02 (recuperação de senha), **adiada**
 - Testes automatizados depois das correções: **230 passando**
 
 ## Evidência – C01 (promoções)

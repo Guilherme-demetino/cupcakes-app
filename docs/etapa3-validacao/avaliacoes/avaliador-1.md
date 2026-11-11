@@ -41,4 +41,5 @@
 - **Requisitos confirmados por este teste:** **RNF02** (uso no celular real).
 
 **Observação registrada com transparência:**
-- Na conferência do banco do site publicado (09/11/2026, 22:15), **não foi encontrado nenhum pedido** além dos 2 de exemplo, embora o avaliador tenha marcado "Finalizar pedido" como testado e funcionando. O log do Render confirma que nenhum dado foi apagado. O avaliador será consultado para confirmar onde fez o teste.
+- Na conferência do banco do site publicado (09/11/2026, 22:15), **não foi encontrado nenhum pedido** além dos 2 de exemplo, embora o avaliador tenha marcado "Finalizar pedido" como testado e funcionando. O log do Render confirma que nenhum dado foi apagado.
+- **Evidência de pedido real no site publicado (11/11/2026):** depois da primeira conferência, o avaliador fez um pedido no site publicado. Ele foi conferido no banco do Render como **Pedido nº 3**: 1× Brigadeiro Belga, total **R$ 22,50**, pagamento em dinheiro, criado às **19:19**. Em seguida, o administrador o levou por Em preparo → Saiu para entrega → **Entregue** (19:21). Isso comprova, no ambiente publicado, o fluxo completo de cliente e de administrador, com os horários corretos (D11). *(Por privacidade, e-mail, telefone e endereço informados não são reproduzidos aqui.)*

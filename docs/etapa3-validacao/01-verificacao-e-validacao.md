@@ -16,7 +16,7 @@ Cada nível de desenvolvimento da Etapa 1 tem um nível de teste correspondente:
 
 | Desenvolvimento (Etapa 1 e 2) | ⟷ | Teste correspondente | Como foi feito | Resultado |
 |---|---|---|---|---|
-| **Requisitos** (histórias US01–US12, RN, RNF) | ⟷ | **Teste de aceitação** | 5 colegas usam o sistema publicado e preenchem o formulário de avaliação | 🟡 4 de 5 recebidas ([seção 1.6](#16-validação-com-usuários-teste-de-aceitação)) |
+| **Requisitos** (histórias US01–US12, RN, RNF) | ⟷ | **Teste de aceitação** | 5 colegas usam o sistema publicado e preenchem o formulário de avaliação | ✅ 5 de 5 recebidas + pedido real conferido no banco ([seção 1.6](#16-validação-com-usuários-teste-de-aceitação)) |
 | **Análise** (casos de uso, critérios de aceitação) | ⟷ | **Teste de sistema** | Roteiro manual de 28 passos, feito pelo aluno no próprio computador, + Lighthouse | ✅ 25 de 25 obrigatórios OK; Lighthouse 94/100/100/91 ([seção 1.3](#13-teste-de-sistema-roteiro-manual)) |
 | **Arquitetura** (MVC + PostgreSQL) | ⟷ | **Teste de integração** | Pytest: models com o banco real, rotas simulando o navegador | ✅ 141 testes passando |
 | **Código** (classes e funções) | ⟷ | **Teste unitário** | Pytest: regras de negócio isoladas, sem banco | ✅ 89 testes passando |
@@ -154,10 +154,10 @@ Liga **cada requisito da Etapa 1** à evidência de que foi atendido.
 | RNF06 Admin restrito | Cliente recebe MSG17 | `test_cliente_recebe_msg17` (6 rotas); roteiro 18 | ✅ |
 | RNF07 MVC | Pastas models/views/controllers | Estrutura do repositório (`app/`) | ✅ |
 | RNF08 Erro amigável | MSG99, sem detalhes técnicos | `test_erro_inesperado_mostra_msg99_sem_detalhes_tecnicos` (novo) | ✅ |
-| RNF09 Navegadores | Chrome, Edge, Firefox, Safari | Chrome no computador e no celular ✅. Demais navegadores: aguardando os próximos avaliadores | 🟡 Parcial |
+| RNF09 Navegadores | Chrome, Edge, Firefox, Safari | Chrome no computador e no celular ✅ (os 5 avaliadores usaram Chrome). **Edge, Firefox e Safari não foram testados** | 🟡 Parcial |
 | RNF10 PostgreSQL | PostgreSQL 14+ | Rodando no PostgreSQL 16 (desenvolvimento) e 18 (PC do aluno) | ✅ |
 
-**Resumo:** 12/12 histórias ✅ • 12/12 regras ✅ • 9/10 RNF ✅ e 1 parcial (RNF09, outros navegadores), que aguarda os próximos avaliadores.
+**Resumo:** 12/12 histórias ✅ • 12/12 regras ✅ • 9/10 RNF ✅ e 1 parcial (RNF09: os 5 avaliadores usaram Chrome, e os outros navegadores não foram testados).
 
 ---
 
@@ -193,10 +193,12 @@ A validação é feita por **5 colegas de curso ou profissionais da área**, que
 | 2 – Felipe Silva (colega, celular e computador, Chrome) | 09/11/2026 | [Laudo 2](avaliacoes/avaliador-2.md): 10/10 OK; notas 5/4; compraria: talvez | ✅ |
 | 3 – Eloisa Ferreira (colega, computador, Chrome) | 09/11/2026 | [Laudo 3](avaliacoes/avaliador-3.md): 10/10 OK; notas 4/4 | ✅ |
 | 4 – José Almeida (colega, celular, Chrome) | 09/11/2026 | [Laudo 4](avaliacoes/avaliador-4.md): 10/10 OK; notas 4/4 | ✅ |
-| 5 | | | ⏳ |
+| 5 – Gustavo Ribeiro de Oliveira (profissional de TI, celular, Chrome) | 11/11/2026 | [Laudo 5](avaliacoes/avaliador-5.md): 10/10 OK; notas 5/5; 1 sugestão (C02) | ✅ |
 
-**Resumo parcial (4 de 5):** 40 de 40 verificações de funcionalidade marcadas como "funcionou", nenhum erro relatado, médias de **4,5/5 em facilidade** e **4,25/5 em aparência**, e 3 de 4 avaliadores comprariam por um app assim. A única sugestão (C01, promoções) foi implementada.
+**Resumo (5 de 5):** 50 de 50 verificações de funcionalidade marcadas como "funcionou", **nenhum erro relatado**, médias de **4,6/5 em facilidade** e **4,4/5 em aparência**, e 4 de 5 avaliadores comprariam por um app assim (1 "talvez"). Sugestões: C01 (promoções), **implementada**; C02 (recuperação de senha), **adiada** com justificativa.
 
-**Ponto de atenção (transparência):** na conferência do banco do site publicado em 09/11/2026, às 22:15, **não havia pedidos dos avaliadores**, apenas os 2 de exemplo, embora todos tenham marcado "Finalizar pedido" como funcionando. O log do Render mostra que nenhum dado foi apagado. Os avaliadores serão consultados, e o 5º avaliador vai finalizar um pedido real, que será conferido no banco.
+**Ponto de atenção (transparência):** nas conferências do banco do site publicado (09/11, 22:15 e 11/11, 19:02), **não havia pedidos dos avaliadores**, apenas os 2 de exemplo, embora todos tenham marcado "Finalizar pedido" como funcionando. O log do Render mostra que nenhum dado foi apagado. Por isso, foi pedido um pedido real, conferido no banco:
+
+**Evidência de pedido real no site publicado (11/11/2026):** depois da primeira conferência, o avaliador 1 (Gabriel Ferreria de Oliveira) fez um pedido no site publicado. Ele foi conferido no banco do Render como **Pedido nº 3**: 1× Brigadeiro Belga, total **R$ 22,50**, pagamento em dinheiro, criado às **19:19**. Em seguida, o administrador o levou por Em preparo → Saiu para entrega → **Entregue** (19:21). Isso comprova, no ambiente publicado, o fluxo completo de cliente e de administrador, com os horários corretos (D11). *(Por privacidade, e-mail, telefone e endereço informados não são reproduzidos aqui.)*
 
 As sugestões e correções resultantes estão em [03 – Correções](03-correcoes-apos-avaliacao.md).
